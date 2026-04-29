@@ -69,7 +69,8 @@ Badge.displayName = "Badge";
 export { Badge, badgeVariants };
 
 export function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; variant: any }> = {
+  type BadgeVariant = "pass" | "fail" | "review" | "pending" | "completed" | "in_progress";
+  const map: Record<string, { label: string; variant: BadgeVariant }> = {
     pass: { label: "ผ่าน", variant: "pass" },
     fail: { label: "ไม่ผ่าน", variant: "fail" },
     review: { label: "ตรวจสอบ", variant: "review" },

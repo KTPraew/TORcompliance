@@ -1,110 +1,40 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { LucideIcon, TrendingUp, TrendingDown } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface StatsCardProps {
   title: string;
   value: string | number;
   icon: LucideIcon;
-  trend?: number;
-  trendLabel?: string;
-  color?: "blue" | "emerald" | "amber" | "purple" | "rose";
+  color?: "indigo" | "blue" | "emerald" | "amber" | "purple" | "rose";
   index?: number;
 }
 
 const colorConfig = {
-  blue: {
-    bg: "bg-blue-50",
-    icon: "text-blue-600",
-    iconBg: "bg-blue-100",
-    border: "border-blue-100",
-  },
-  emerald: {
-    bg: "bg-emerald-50",
-    icon: "text-emerald-600",
-    iconBg: "bg-emerald-100",
-    border: "border-emerald-100",
-  },
-  amber: {
-    bg: "bg-amber-50",
-    icon: "text-amber-600",
-    iconBg: "bg-amber-100",
-    border: "border-amber-100",
-  },
-  purple: {
-    bg: "bg-purple-50",
-    icon: "text-purple-600",
-    iconBg: "bg-purple-100",
-    border: "border-purple-100",
-  },
-  rose: {
-    bg: "bg-rose-50",
-    icon: "text-rose-600",
-    iconBg: "bg-rose-100",
-    border: "border-rose-100",
-  },
+  indigo: { iconBg: "bg-[#eef2ff]", icon: "text-[#4361ee]" },
+  blue:   { iconBg: "bg-blue-50",   icon: "text-blue-600" },
+  emerald:{ iconBg: "bg-emerald-50",icon: "text-emerald-600" },
+  amber:  { iconBg: "bg-amber-50",  icon: "text-amber-600" },
+  purple: { iconBg: "bg-purple-50", icon: "text-purple-600" },
+  rose:   { iconBg: "bg-rose-50",   icon: "text-rose-600" },
 };
 
-export function StatsCard({
-  title,
-  value,
-  icon: Icon,
-  trend,
-  trendLabel,
-  color = "blue",
-  index = 0,
-}: StatsCardProps) {
+export function StatsCard({ title, value, icon: Icon, color = "indigo", index = 0 }: StatsCardProps) {
   const colors = colorConfig[color];
-  const isPositive = trend !== undefined && trend > 0;
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08, duration: 0.4, ease: "easeOut" }}
-      className="bg-white rounded-2xl shadow-card border border-slate-100 p-6 relative overflow-hidden"
+    <div
+      className="bg-white rounded-2xl border border-slate-100 p-5 animate-in fade-in-0 slide-in-from-bottom-2 duration-300"
+      style={{ animationDelay: `${index * 60}ms`, animationFillMode: "both",
+               boxShadow: "0 1px 4px rgba(67,97,238,0.05), 0 4px 20px rgba(67,97,238,0.07)" }}
     >
-      {/* Background decoration */}
-      <div className={cn("absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-30", colors.bg)} />
-
-      <div className="relative">
-        <div className="flex items-start justify-between mb-4">
-          <div className={cn("w-11 h-11 rounded-xl flex items-center justify-center", colors.iconBg)}>
-            <Icon className={cn("w-5 h-5", colors.icon)} />
-          </div>
-          {trend !== undefined && (
-            <div
-              className={cn(
-                "flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-lg",
-                isPositive
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "bg-red-50 text-red-500"
-              )}
-            >
-              {isPositive ? (
-                <TrendingUp className="w-3 h-3" />
-              ) : (
-                <TrendingDown className="w-3 h-3" />
-              )}
-              {Math.abs(trend)}%
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-1">
-          <div className="text-3xl font-bold text-slate-900 tracking-tight">
-            {typeof value === "number" && value >= 1000
-              ? value.toLocaleString()
-              : value}
-          </div>
-          <div className="text-sm font-medium text-slate-500">{title}</div>
-          {trendLabel && (
-            <div className="text-xs text-slate-400">{trendLabel}</div>
-          )}
-        </div>
+      <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center mb-4", colors.iconBg)}>
+        <Icon className={cn("w-5 h-5", colors.icon)} aria-hidden="true" />
       </div>
-    </motion.div>
+      <div className="text-[1.75rem] font-bold text-slate-900 leading-none tracking-tight">
+        {typeof value === "number" && value >= 1000 ? value.toLocaleString() : value}
+      </div>
+      <div className="text-sm text-slate-500 font-medium mt-1.5">{title}</div>
+    </div>
   );
 }

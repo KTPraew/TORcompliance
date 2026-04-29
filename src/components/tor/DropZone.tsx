@@ -27,9 +27,9 @@ export function DropZone({
     "image/webp": [".webp"],
   },
   label = "อัปโหลดไฟล์ TOR",
-  sublabel = "รองรับ PDF, PNG, JPG ขนาดไม่เกิน 10MB",
+  sublabel = "รองรับ PDF, PNG, JPG ขนาดไม่เกิน 30MB",
   icon = "document",
-  maxSize = 10 * 1024 * 1024,
+  maxSize = 30 * 1024 * 1024,
   acceptedFile,
   onClear,
   disabled = false,
@@ -45,7 +45,7 @@ export function DropZone({
       if (rejectedFiles.length > 0) {
         const err = rejectedFiles[0].errors[0];
         if (err.code === "file-too-large") {
-          setError("ไฟล์มีขนาดใหญ่เกินไป กรุณาเลือกไฟล์ขนาดไม่เกิน 10MB");
+          setError("ไฟล์มีขนาดใหญ่เกินไป กรุณาเลือกไฟล์ขนาดไม่เกิน 30MB");
         } else if (err.code === "file-invalid-type") {
           setError("ไฟล์ประเภทนี้ไม่รองรับ กรุณาเลือกไฟล์ PDF หรือรูปภาพ");
         } else {
@@ -103,9 +103,10 @@ export function DropZone({
         {onClear && (
           <button
             onClick={onClear}
-            className="w-8 h-8 rounded-lg hover:bg-emerald-100 flex items-center justify-center text-emerald-600 transition-colors flex-shrink-0"
+            aria-label="ลบไฟล์ที่เลือก"
+            className="w-9 h-9 rounded-lg hover:bg-emerald-100 flex items-center justify-center text-emerald-600 transition-colors flex-shrink-0"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         )}
       </motion.div>
@@ -168,11 +169,6 @@ export function DropZone({
           )}
         </AnimatePresence>
 
-        {/* Decorative corners */}
-        <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-primary/20 rounded-tl-lg" />
-        <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-primary/20 rounded-tr-lg" />
-        <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-primary/20 rounded-bl-lg" />
-        <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-primary/20 rounded-br-lg" />
       </div>
 
       <AnimatePresence>

@@ -64,8 +64,8 @@ export function Modal({
                   </Dialog.Description>
                 )}
               </div>
-              <Dialog.Close className="text-slate-400 hover:text-slate-600 transition-colors ml-4 mt-0.5">
-                <X className="w-5 h-5" />
+              <Dialog.Close className="text-slate-400 hover:text-slate-600 transition-colors ml-4 mt-0.5" aria-label="ปิด">
+                <X className="w-5 h-5" aria-hidden="true" />
               </Dialog.Close>
             </div>
           )}

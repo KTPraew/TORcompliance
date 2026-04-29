@@ -42,17 +42,14 @@ export default function HelpPage() {
 
   return (
     <AppShell>
-      <div className="p-8 max-w-4xl mx-auto">
+      <div className="px-6 py-7 lg:px-8 max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-1.5 h-6 rounded-full gradient-primary" />
-            <h1 className="text-2xl font-bold text-slate-900">ช่วยเหลือ</h1>
-          </div>
-          <p className="text-slate-500 text-sm ml-3.5">คำถามที่พบบ่อยและวิธีใช้งาน</p>
+          <h1 className="text-2xl font-bold text-slate-900">ช่วยเหลือ</h1>
+          <p className="text-slate-500 text-sm mt-1">คำถามที่พบบ่อยและวิธีใช้งาน</p>
         </motion.div>
 
         <div className="grid grid-cols-3 gap-4 mb-8">
@@ -68,7 +65,7 @@ export default function HelpPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
-                className="bg-white rounded-2xl shadow-card border border-slate-100 p-5 flex flex-col items-center gap-3 text-center cursor-pointer hover:shadow-lg transition-all"
+                className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-5 flex flex-col items-center gap-3 text-center cursor-pointer hover:shadow-lg transition-all"
               >
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${item.color}`}>
                   <Icon className="w-6 h-6" />
@@ -80,7 +77,7 @@ export default function HelpPage() {
           })}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
+        <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-6">
           <h2 className="font-semibold text-slate-900 mb-5">คำถามที่พบบ่อย</h2>
           <div className="space-y-2">
             {faqs.map((faq, index) => (

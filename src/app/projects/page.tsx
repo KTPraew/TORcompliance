@@ -1,22 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
   Search,
   Filter,
   FolderOpen,
-  ChevronDown,
   X,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
-import { Badge } from "@/components/ui/Badge";
-import { mockProjects } from "@/lib/mock-data";
 import type { Project } from "@/types";
 
 const statusFilters = [
@@ -38,53 +36,78 @@ const categoryOptions = [
 ];
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>(mockProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<Project | null>(null);
   const [newProject, setNewProject] = useState({
     name: "",
     description: "",
     category: "Government Portal",
   });
 
-  const filtered = projects.filter((p) => {
-    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "all" || p.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
+  const fetchProjects = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (statusFilter !== "all") params.set("status", statusFilter);
+      if (search) params.set("search", search);
+
+      const res = await fetch(`/api/projects?${params}`);
+      const json = await res.json();
+      if (json.success) setProjects(json.data);
+    } finally {
+      setLoading(false);
+    }
+  }, [statusFilter, search]);
+
+  useEffect(() => {
+    const timer = setTimeout(fetchProjects, search ? 300 : 0);
+    return () => clearTimeout(timer);
+  }, [fetchProjects, search]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProject.name.trim()) return;
     setCreating(true);
+    try {
+      const res = await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newProject),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setProjects([json.data, ...projects]);
+        setShowCreate(false);
+        setNewProject({ name: "", description: "", category: "Government Portal" });
+      }
+    } finally {
+      setCreating(false);
+    }
+  };
 
-    await new Promise((r) => setTimeout(r, 800));
-
-    const created: Project = {
-      id: `${Date.now()}`,
-      name: newProject.name,
-      description: newProject.description,
-      status: "pending",
-      score: 0,
-      checklistCount: 0,
-      passedCount: 0,
-      failedCount: 0,
-      reviewCount: 0,
-      createdAt: new Date().toISOString().split("T")[0],
-      category: newProject.category,
-    };
-
-    setProjects([created, ...projects]);
-    setCreating(false);
-    setShowCreate(false);
-    setNewProject({ name: "", description: "", category: "Government Portal" });
+  const handleDelete = async (project: Project) => {
+    setDeletingId(project.id);
+    try {
+      const res = await fetch(`/api/projects?id=${project.id}`, { method: "DELETE" });
+      const json = await res.json();
+      if (json.success) {
+        setProjects((prev) => prev.filter((p) => p.id !== project.id));
+        setShowDeleteConfirm(null);
+      }
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
     <AppShell>
-      <div className="p-8 max-w-7xl mx-auto">
+      <div className="px-6 py-7 lg:px-8 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -92,11 +115,8 @@ export default function ProjectsPage() {
           className="flex items-start justify-between mb-8"
         >
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-1.5 h-6 rounded-full gradient-primary" />
-              <h1 className="text-2xl font-bold text-slate-900">โปรเจคทั้งหมด</h1>
-            </div>
-            <p className="text-slate-500 text-sm ml-3.5">
+            <h1 className="text-2xl font-bold text-slate-900">โปรเจคทั้งหมด</h1>
+            <p className="text-slate-500 text-sm mt-1">
               จัดการและตรวจสอบความสอดคล้องของเว็บไซต์ภาครัฐ
             </p>
           </div>
@@ -111,10 +131,10 @@ export default function ProjectsPage() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-2xl shadow-card border border-slate-100 p-4 mb-6"
+          className="bg-white rounded-2xl border border-slate-100/80 p-4 mb-6"
+          style={{ boxShadow: "0 1px 4px rgba(67,97,238,0.04), 0 4px 16px rgba(67,97,238,0.05)" }}
         >
           <div className="flex items-center gap-4 flex-wrap">
-            {/* Search */}
             <div className="relative flex-1 min-w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -134,7 +154,6 @@ export default function ProjectsPage() {
               )}
             </div>
 
-            {/* Status filters */}
             <div className="flex items-center gap-1.5">
               {statusFilters.map((f) => (
                 <button
@@ -153,14 +172,24 @@ export default function ProjectsPage() {
 
             <div className="flex items-center gap-1.5 text-xs text-slate-500 ml-auto">
               <Filter className="w-3.5 h-3.5" />
-              <span>{filtered.length} โปรเจค</span>
+              <span>{projects.length} โปรเจค</span>
             </div>
           </div>
         </motion.div>
 
         {/* Projects grid */}
         <AnimatePresence mode="wait">
-          {filtered.length > 0 ? (
+          {loading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center justify-center py-24"
+            >
+              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            </motion.div>
+          ) : projects.length > 0 ? (
             <motion.div
               key="grid"
               initial={{ opacity: 0 }}
@@ -168,15 +197,25 @@ export default function ProjectsPage() {
               exit={{ opacity: 0 }}
               className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
             >
-              {filtered.map((project, index) => (
-                <ProjectCard key={project.id} project={project} index={index} />
+              {projects.map((project, index) => (
+                <div key={project.id} className="relative group">
+                  <ProjectCard project={project} index={index} />
+                  {/* Delete button overlay */}
+                  <button
+                    onClick={() => setShowDeleteConfirm(project)}
+                    className="absolute top-3 right-3 w-9 h-9 rounded-lg bg-white/80 border border-slate-200 text-slate-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-sm"
+                    aria-label={`ลบโปรเจค ${project.name}`}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                  </button>
+                </div>
               ))}
 
               {/* Create new card */}
               <motion.button
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: filtered.length * 0.06, duration: 0.35 }}
+                transition={{ delay: projects.length * 0.06, duration: 0.35 }}
                 onClick={() => setShowCreate(true)}
                 className="border-2 border-dashed border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 text-center hover:border-primary/40 hover:bg-primary/2 transition-all duration-200 group min-h-[200px]"
               >
@@ -225,8 +264,9 @@ export default function ProjectsPage() {
       >
         <form onSubmit={handleCreate} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-slate-700">ชื่อโปรเจค *</label>
+            <label htmlFor="project-name" className="text-sm font-medium text-slate-700">ชื่อโปรเจค *</label>
             <input
+              id="project-name"
               type="text"
               placeholder="เช่น กระทรวงดิจิทัล - Portal Website"
               value={newProject.name}
@@ -237,8 +277,9 @@ export default function ProjectsPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-slate-700">คำอธิบาย</label>
+            <label htmlFor="project-description" className="text-sm font-medium text-slate-700">คำอธิบาย</label>
             <textarea
+              id="project-description"
               placeholder="อธิบายเกี่ยวกับเว็บไซต์หรือระบบที่จะตรวจสอบ"
               value={newProject.description}
               onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
@@ -248,8 +289,9 @@ export default function ProjectsPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-slate-700">ประเภทเว็บไซต์</label>
+            <label htmlFor="project-category" className="text-sm font-medium text-slate-700">ประเภทเว็บไซต์</label>
             <select
+              id="project-category"
               value={newProject.category}
               onChange={(e) => setNewProject({ ...newProject, category: e.target.value })}
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none"
@@ -282,6 +324,37 @@ export default function ProjectsPage() {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Delete confirm modal */}
+      <Modal
+        open={!!showDeleteConfirm}
+        onOpenChange={(open) => !open && setShowDeleteConfirm(null)}
+        title="ลบโปรเจค"
+        description={`คุณแน่ใจหรือไม่ว่าต้องการลบ "${showDeleteConfirm?.name}"? การกระทำนี้ไม่สามารถย้อนกลับได้`}
+        size="sm"
+      >
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            size="md"
+            className="flex-1"
+            onClick={() => setShowDeleteConfirm(null)}
+          >
+            ยกเลิก
+          </Button>
+          <Button
+            type="button"
+            size="md"
+            className="flex-1 bg-red-500 hover:bg-red-600 focus:ring-red-300"
+            loading={deletingId === showDeleteConfirm?.id}
+            onClick={() => showDeleteConfirm && handleDelete(showDeleteConfirm)}
+          >
+            <Trash2 className="w-4 h-4" />
+            ลบโปรเจค
+          </Button>
+        </div>
       </Modal>
     </AppShell>
   );

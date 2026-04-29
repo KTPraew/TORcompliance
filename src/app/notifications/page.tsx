@@ -1,109 +1,186 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Bell, CheckCircle2, Zap, FileText, AlertCircle } from "lucide-react";
+import {
+  Bell,
+  CheckCircle2,
+  Zap,
+  FileText,
+  Loader2,
+} from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
-import { Badge } from "@/components/ui/Badge";
+import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/auth-context";
 
-const notifications = [
-  {
-    id: 1,
-    type: "success",
-    icon: CheckCircle2,
-    iconColor: "text-emerald-500",
-    iconBg: "bg-emerald-50",
-    title: "การวิเคราะห์ UI เสร็จสิ้น",
-    body: "สำนักงานประกันสังคม - ระบบบริการออนไลน์ ได้รับคะแนน 92%",
-    time: "10 นาทีที่แล้ว",
-    unread: true,
-  },
-  {
-    id: 2,
-    type: "info",
-    icon: Zap,
-    iconColor: "text-blue-500",
-    iconBg: "bg-blue-50",
-    title: "AI วิเคราะห์ TOR เสร็จสิ้น",
-    body: "กรมสาธารณสุข - Health Portal สร้าง Checklist 18 รายการ",
-    time: "2 ชั่วโมงที่แล้ว",
-    unread: true,
-  },
-  {
-    id: 3,
-    type: "warning",
-    icon: AlertCircle,
-    iconColor: "text-amber-500",
-    iconBg: "bg-amber-50",
-    title: "พบปัญหา Critical 3 รายการ",
-    body: "กระทรวงดิจิทัล - Portal Website มีปัญหา WCAG ที่ต้องแก้ไขด่วน",
-    time: "เมื่อวาน",
-    unread: false,
-  },
-  {
-    id: 4,
-    type: "info",
-    icon: FileText,
-    iconColor: "text-purple-500",
-    iconBg: "bg-purple-50",
-    title: "ออกรายงานใหม่",
-    body: "กรมการปกครอง - ระบบทะเบียนราษฎร์ รายงานพร้อมดาวน์โหลด",
-    time: "3 วันที่แล้ว",
-    unread: false,
-  },
-];
+type IconName = "check" | "zap" | "file";
+
+type ActivityItem = {
+  id: string;
+  iconName: IconName;
+  iconColor: string;
+  iconBg: string;
+  title: string;
+  body: string;
+  time: string;
+  unread: boolean;
+};
+
+const ICONS: Record<IconName, React.ElementType> = {
+  check: CheckCircle2,
+  zap: Zap,
+  file: FileText,
+};
+
+function relativeTime(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  if (mins < 1) return "เมื่อกี้";
+  if (mins < 60) return `${mins} นาทีที่แล้ว`;
+  if (hours < 24) return `${hours} ชั่วโมงที่แล้ว`;
+  if (days === 1) return "เมื่อวาน";
+  return `${days} วันที่แล้ว`;
+}
 
 export default function NotificationsPage() {
+  const { user } = useAuth();
+  const [notifications, setNotifications] = useState<ActivityItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) { setLoading(false); return; }
+    const supabase = createClient();
+
+    const load = async () => {
+      try {
+
+        const { data: projects } = await supabase
+          .from("projects")
+          .select("id, name, status, tor_file_name, created_at, updated_at, score")
+          .eq("user_id", user!.id)
+          .order("updated_at", { ascending: false })
+          .limit(15);
+
+        const items: ActivityItem[] = [];
+        for (const p of (projects ?? [])) {
+          if (p.status === "completed" && p.score > 0) {
+            items.push({
+              id: `analysis-${p.id}`,
+              iconName: "check",
+              iconColor: "text-emerald-500",
+              iconBg: "bg-emerald-50",
+              title: "การวิเคราะห์เสร็จสิ้น",
+              body: `${p.name} — ได้คะแนน ${p.score}%`,
+              time: relativeTime(p.updated_at),
+              unread: Date.now() - new Date(p.updated_at).getTime() < 86400000,
+            });
+          }
+          if (p.status === "in_progress") {
+            items.push({
+              id: `progress-${p.id}`,
+              iconName: "zap",
+              iconColor: "text-blue-500",
+              iconBg: "bg-blue-50",
+              title: "กำลังดำเนินการ",
+              body: `${p.name} — อยู่ระหว่างการตรวจสอบ`,
+              time: relativeTime(p.updated_at),
+              unread: false,
+            });
+          }
+          if (p.tor_file_name) {
+            items.push({
+              id: `tor-${p.id}`,
+              iconName: "file",
+              iconColor: "text-purple-500",
+              iconBg: "bg-purple-50",
+              title: "อัปโหลด TOR สำเร็จ",
+              body: `${p.name} — ${p.tor_file_name}`,
+              time: relativeTime(p.created_at),
+              unread: false,
+            });
+          }
+        }
+        setNotifications(items.slice(0, 12));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [user?.id]);
+
+  const unreadCount = notifications.filter((n) => n.unread).length;
+
   return (
     <AppShell>
-      <div className="p-8 max-w-3xl mx-auto">
+      <div className="px-6 py-7 lg:px-8 max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-1.5 h-6 rounded-full gradient-primary" />
-            <h1 className="text-2xl font-bold text-slate-900">การแจ้งเตือน</h1>
-          </div>
-          <p className="text-slate-500 text-sm ml-3.5">
-            {notifications.filter((n) => n.unread).length} การแจ้งเตือนที่ยังไม่ได้อ่าน
+          <h1 className="text-2xl font-bold text-slate-900">การแจ้งเตือน</h1>
+          <p className="text-slate-500 text-sm mt-1">
+            {loading
+              ? "กำลังโหลด..."
+              : unreadCount > 0
+              ? `${unreadCount} การแจ้งเตือนใหม่`
+              : "ไม่มีการแจ้งเตือนใหม่"}
           </p>
         </motion.div>
 
-        <div className="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
-          <div className="divide-y divide-slate-50">
-            {notifications.map((notif, index) => {
-              const Icon = notif.icon;
-              return (
-                <motion.div
-                  key={notif.id}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.07 }}
-                  className={`flex items-start gap-4 p-5 hover:bg-slate-50/50 transition-colors cursor-pointer ${
-                    notif.unread ? "bg-blue-50/30" : ""
-                  }`}
-                >
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${notif.iconBg}`}
-                  >
-                    <Icon className={`w-5 h-5 ${notif.iconColor}`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-sm font-semibold text-slate-900">{notif.title}</p>
-                      {notif.unread && (
-                        <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-1.5" />
-                      )}
-                    </div>
-                    <p className="text-xs text-slate-500 mt-0.5">{notif.body}</p>
-                    <p className="text-[10px] text-slate-400 mt-1.5">{notif.time}</p>
-                  </div>
-                </motion.div>
-              );
-            })}
+        {loading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="w-8 h-8 text-[#4361ee] animate-spin" />
           </div>
-        </div>
+        ) : notifications.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center justify-center py-24 text-center"
+          >
+            <div className="w-20 h-20 rounded-3xl bg-slate-100 flex items-center justify-center mb-4">
+              <Bell className="w-10 h-10 text-slate-300" />
+            </div>
+            <h3 className="text-lg font-semibold text-slate-700 mb-1">ยังไม่มีการแจ้งเตือน</h3>
+            <p className="text-sm text-slate-400">เริ่มต้นวิเคราะห์โปรเจคเพื่อรับการแจ้งเตือน</p>
+          </motion.div>
+        ) : (
+          <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 overflow-hidden">
+            <div className="divide-y divide-slate-50">
+              {notifications.map((notif, index) => {
+                const Icon = ICONS[notif.iconName];
+                return (
+                  <motion.div
+                    key={notif.id}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className={`flex items-start gap-4 p-5 hover:bg-slate-50/50 transition-colors cursor-pointer ${
+                      notif.unread ? "bg-blue-50/30" : ""
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${notif.iconBg}`}>
+                      <Icon className={`w-5 h-5 ${notif.iconColor}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-sm font-semibold text-slate-900">{notif.title}</p>
+                        {notif.unread && (
+                          <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-1.5" />
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-500 mt-0.5">{notif.body}</p>
+                      <p className="text-[10px] text-slate-400 mt-1.5">{notif.time}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </AppShell>
   );
