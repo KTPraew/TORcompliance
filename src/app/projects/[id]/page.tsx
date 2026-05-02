@@ -50,37 +50,54 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
 
-  // Fetch real project from Supabase
+  // Fetch project + saved checklist items from Supabase
   useEffect(() => {
     const supabase = createClient();
-    supabase
-      .from("projects")
-      .select("*")
-      .eq("id", id)
-      .single()
-      .then(({ data, error }: { data: Record<string, any> | null; error: unknown }) => {
-        if (error || !data) {
+    Promise.all([
+      supabase.from("projects").select("*").eq("id", id).single(),
+      supabase.from("checklist_items").select("*").eq("project_id", id).order("category"),
+    ])
+      .then(([{ data: projData, error: projError }, { data: itemsData }]) => {
+        if (projError || !projData) {
           setNotFound(true);
         } else {
           setProject({
-            id: data.id,
-            name: data.name,
-            description: data.description,
-            status: data.status,
-            score: data.score,
-            checklistCount: data.checklist_count,
-            passedCount: data.passed_count,
-            failedCount: data.failed_count,
-            reviewCount: data.review_count,
-            torFileName: data.tor_file_name,
-            uiFileName: data.ui_file_name,
-            category: data.category,
-            createdAt: data.created_at.split("T")[0],
-            updatedAt: data.updated_at ? data.updated_at.split("T")[0] : undefined,
+            id: projData.id,
+            name: projData.name,
+            description: projData.description,
+            status: projData.status,
+            score: projData.score ?? 0,
+            checklistCount: projData.checklist_count ?? 0,
+            passedCount: projData.passed_count ?? 0,
+            failedCount: projData.failed_count ?? 0,
+            reviewCount: projData.review_count ?? 0,
+            torFileName: projData.tor_file_name ?? undefined,
+            uiFileName: projData.ui_file_name ?? undefined,
+            category: projData.category ?? undefined,
+            createdAt: (projData.created_at ?? "").split("T")[0],
+            updatedAt: projData.updated_at ? projData.updated_at.split("T")[0] : undefined,
           });
+          if (itemsData && itemsData.length > 0) {
+            setChecklist(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              itemsData.map((row: any) => ({
+                id: row.id,
+                category: row.category,
+                standard: row.standard,
+                title: row.title,
+                description: row.description,
+                required: row.required,
+                status: row.status,
+                suggestion: row.suggestion ?? undefined,
+                severity: row.severity ?? undefined,
+                wcagLevel: row.wcag_level ?? undefined,
+              }))
+            );
+          }
         }
-        setLoadingProject(false);
-      });
+      })
+      .catch(() => setNotFound(true))
+      .finally(() => setLoadingProject(false));
   }, [id]);
 
   const analyzeSteps = [
@@ -202,6 +219,25 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
     });
 
     try {
+      // Save individual item statuses
+      const itemUpserts = checklist.map((item) => ({
+        id: item.id,
+        project_id: id,
+        category: item.category,
+        standard: item.standard,
+        title: item.title,
+        description: item.description,
+        required: item.required,
+        status: item.status,
+        suggestion: item.suggestion ?? null,
+        severity: item.severity ?? null,
+        wcag_level: item.wcagLevel ?? null,
+      }));
+      await supabase.from("checklist_items").upsert(itemUpserts, {
+        onConflict: "id,project_id",
+      });
+
+      // Save category score aggregates
       await supabase.from("project_category_scores").upsert(upserts, {
         onConflict: "project_id,category",
       });

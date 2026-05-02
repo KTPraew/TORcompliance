@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 import { motion } from "framer-motion";
@@ -18,6 +18,7 @@ import {
   Moon,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
 
@@ -62,7 +63,7 @@ export default function SettingsPage() {
   const [passwordSave, setPasswordSave] = useState<SaveState>("idle");
   const [passwordError, setPasswordError] = useState("");
 
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { user: authUser } = useAuth();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -73,25 +74,28 @@ export default function SettingsPage() {
     if (!authUser) { setLoadingProfile(false); return; }
     setLoadingProfile(true);
 
-    setEmail(authUser.email ?? "");
-    setUserId(authUser.id);
+    try {
+      setEmail(authUser.email ?? "");
+      setUserId(authUser.id);
 
-    const { data: profileData } = await supabase
-      .from("profiles")
-      .select("first_name, last_name, phone, organization, avatar_url")
-      .eq("id", authUser.id)
-      .single();
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, phone, organization, avatar_url")
+        .eq("id", authUser.id)
+        .single();
 
-    if (profileData) {
-      setProfile({
-        first_name: profileData.first_name ?? "",
-        last_name: profileData.last_name ?? "",
-        phone: profileData.phone ?? "",
-        organization: profileData.organization ?? "",
-        avatar_url: profileData.avatar_url ?? "",
-      });
+      if (profileData) {
+        setProfile({
+          first_name: profileData.first_name ?? "",
+          last_name: profileData.last_name ?? "",
+          phone: profileData.phone ?? "",
+          organization: profileData.organization ?? "",
+          avatar_url: profileData.avatar_url ?? "",
+        });
+      }
+    } finally {
+      setLoadingProfile(false);
     }
-    setLoadingProfile(false);
   }, [supabase, authUser]);
 
   useEffect(() => {
@@ -204,6 +208,7 @@ export default function SettingsPage() {
 
   return (
     <AppShell>
+      <PageHeader title="ตั้งค่า" />
       <div className="px-6 py-7 lg:px-8 max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -8 }}

@@ -10,6 +10,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 
@@ -55,11 +56,12 @@ export default function NotificationsPage() {
 
     const load = async () => {
       try {
+        if (!user) return;
 
         const { data: projects } = await supabase
           .from("projects")
           .select("id, name, status, tor_file_name, created_at, updated_at, score")
-          .eq("user_id", user!.id)
+          .eq("user_id", user.id)
           .order("updated_at", { ascending: false })
           .limit(15);
 
@@ -115,6 +117,7 @@ export default function NotificationsPage() {
 
   return (
     <AppShell>
+      <PageHeader title="การแจ้งเตือน" />
       <div className="px-6 py-7 lg:px-8 max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -8 }}

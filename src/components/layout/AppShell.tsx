@@ -13,7 +13,7 @@ export function AppShell({ children }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="bg-[#f0f5ff] min-h-screen">
+    <div className="bg-[#f1f4fd] min-h-screen">
       {/* Desktop sidebar */}
       <div className="hidden md:block">
         <Sidebar />
@@ -29,7 +29,7 @@ export function AppShell({ children }: AppShellProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="fixed inset-0 z-40 bg-black/50 md:hidden"
+              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
               onClick={() => setSidebarOpen(false)}
             />
             <motion.div
@@ -46,26 +46,25 @@ export function AppShell({ children }: AppShellProps) {
         )}
       </AnimatePresence>
 
-      {/* Content area */}
-      <div className="md:pl-60">
+      {/* Content */}
+      <div className="md:pl-[240px]">
         {/* Mobile header */}
-        <header className="sticky top-0 z-30 flex items-center gap-3 px-4 h-14 bg-[#f0f5ff] border-b border-slate-200/50 md:hidden">
+        <header className="sticky top-0 z-30 flex items-center gap-3 px-4 h-14 bg-white border-b border-slate-100 md:hidden">
           <button
             onClick={() => setSidebarOpen(true)}
             aria-label="เปิดเมนู"
-            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-200/70 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors"
           >
             <Menu className="w-5 h-5" aria-hidden="true" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center shadow-sm">
+            <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
               <Shield className="w-4 h-4 text-white" aria-hidden="true" />
             </div>
-            <span className="font-bold text-slate-900 text-sm tracking-tight">TOR Compliance AI</span>
+            <span className="font-bold text-slate-900 text-[13px]">TOR Compliance AI</span>
           </div>
         </header>
 
-        {/* Page content */}
         <main>{children}</main>
       </div>
     </div>

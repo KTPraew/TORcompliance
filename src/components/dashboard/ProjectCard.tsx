@@ -32,7 +32,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
       transition={{ delay: index * 0.05, duration: 0.3, ease: "easeOut" }}
     >
       <Link href={`/projects/${project.id}`} className="block group">
-        <div className="bg-white rounded-2xl border border-slate-100 p-5 transition-all duration-200 hover:border-[#4361ee]/20 hover:shadow-[0_4px_20px_rgba(67,97,238,0.10)] shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)]">
+        <div className="bg-white rounded-2xl border border-slate-100 p-5 transition-all duration-200 hover:border-[#4361ee]/20 hover:shadow-md shadow-sm">
 
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-4">

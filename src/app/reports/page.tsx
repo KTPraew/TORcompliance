@@ -12,6 +12,7 @@ import {
   FolderOpen,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Progress } from "@/components/ui/Progress";
@@ -33,6 +34,7 @@ export default function ReportsPage() {
           setProjects(analyzed);
         }
       })
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
@@ -44,6 +46,7 @@ export default function ReportsPage() {
 
   return (
     <AppShell>
+      <PageHeader title="รายงานทั้งหมด" />
       <div className="px-6 py-7 lg:px-8 max-w-6xl mx-auto">
         <div className="animate-in fade-in-0 slide-in-from-top-2 duration-300 flex items-start justify-between mb-8">
           <div>

@@ -48,39 +48,46 @@ export default function ReportPage({ params }: { params: { id: string } }) {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
-    Promise.all([
-      supabase.from("projects").select("*").eq("id", id).single(),
-      supabase
-        .from("project_category_scores")
-        .select("*")
-        .eq("project_id", id)
-        .order("category"),
-    ]).then(([projectRes, scoresRes]) => {
-      if (projectRes.error || !projectRes.data) {
+    const run = async () => {
+      try {
+        const supabase = createClient();
+        const [projectRes, scoresRes] = await Promise.all([
+          supabase.from("projects").select("*").eq("id", id).single(),
+          supabase
+            .from("project_category_scores")
+            .select("*")
+            .eq("project_id", id)
+            .order("category"),
+        ]);
+        if (projectRes.error || !projectRes.data) {
+          setNotFound(true);
+        } else {
+          const d = projectRes.data;
+          setProject({
+            id: d.id,
+            name: d.name,
+            description: d.description,
+            status: d.status,
+            score: d.score ?? 0,
+            checklistCount: d.checklist_count ?? 0,
+            passedCount: d.passed_count ?? 0,
+            failedCount: d.failed_count ?? 0,
+            reviewCount: d.review_count ?? 0,
+            torFileName: d.tor_file_name,
+            uiFileName: d.ui_file_name,
+            category: d.category,
+            createdAt: d.created_at.split("T")[0],
+            updatedAt: d.updated_at ? d.updated_at.split("T")[0] : undefined,
+          });
+          setCategoryScores(scoresRes.data ?? []);
+        }
+      } catch {
         setNotFound(true);
-      } else {
-        const d = projectRes.data;
-        setProject({
-          id: d.id,
-          name: d.name,
-          description: d.description,
-          status: d.status,
-          score: d.score ?? 0,
-          checklistCount: d.checklist_count ?? 0,
-          passedCount: d.passed_count ?? 0,
-          failedCount: d.failed_count ?? 0,
-          reviewCount: d.review_count ?? 0,
-          torFileName: d.tor_file_name,
-          uiFileName: d.ui_file_name,
-          category: d.category,
-          createdAt: d.created_at.split("T")[0],
-          updatedAt: d.updated_at ? d.updated_at.split("T")[0] : undefined,
-        });
-        setCategoryScores(scoresRes.data ?? []);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
+    run();
   }, [id]);
 
   if (loading) {

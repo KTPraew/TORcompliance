@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
@@ -10,8 +11,10 @@ import {
   X,
   Loader2,
   Trash2,
+  AlertCircle,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -36,95 +39,149 @@ const categoryOptions = [
 ];
 
 export default function ProjectsPage() {
+  const router = useRouter();
+
+  // ─── List state ───────────────────────────────────────────────────────────
   const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+
+  // ─── Create state ─────────────────────────────────────────────────────────
   const [showCreate, setShowCreate] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<Project | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [createError, setCreateError] = useState("");
   const [newProject, setNewProject] = useState({
     name: "",
     description: "",
     category: "Government Portal",
   });
 
+  // ─── Delete state ─────────────────────────────────────────────────────────
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<Project | null>(null);
+
+  // ─── Fetch projects ───────────────────────────────────────────────────────
   const fetchProjects = useCallback(async () => {
-    setLoading(true);
+    setIsLoading(true);
+    setFetchError("");
     try {
       const params = new URLSearchParams();
       if (statusFilter !== "all") params.set("status", statusFilter);
       if (search) params.set("search", search);
 
       const res = await fetch(`/api/projects?${params}`);
+
+      if (!res.ok && res.status === 401) {
+        router.push("/login");
+        return;
+      }
+
       const json = await res.json();
-      if (json.success) setProjects(json.data);
+
+      if (json.success) {
+        setProjects(Array.isArray(json.data) ? json.data : []);
+      } else {
+        setFetchError(json.error || "ไม่สามารถดึงข้อมูลโปรเจคได้");
+        setProjects([]);
+      }
+    } catch {
+      setFetchError("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาตรวจสอบอินเทอร์เน็ตและลองใหม่");
+      setProjects([]);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  }, [statusFilter, search]);
+  }, [statusFilter, search, router]);
 
   useEffect(() => {
     const timer = setTimeout(fetchProjects, search ? 300 : 0);
     return () => clearTimeout(timer);
   }, [fetchProjects, search]);
 
+  // ─── Create project ───────────────────────────────────────────────────────
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProject.name.trim()) return;
-    setCreating(true);
+
+    setIsCreating(true);
+    setCreateError("");
+
     try {
       const res = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newProject),
       });
+
       const json = await res.json();
+
       if (json.success) {
-        setProjects([json.data, ...projects]);
         setShowCreate(false);
         setNewProject({ name: "", description: "", category: "Government Portal" });
+        router.push(`/projects/${json.data.id}`);
+      } else {
+        setCreateError(json.error || "สร้างโปรเจคไม่สำเร็จ กรุณาลองใหม่");
       }
+    } catch {
+      setCreateError("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาตรวจสอบอินเทอร์เน็ตและลองใหม่");
     } finally {
-      setCreating(false);
+      setIsCreating(false);
     }
   };
 
+  const handleOpenCreate = () => {
+    setCreateError("");
+    setNewProject({ name: "", description: "", category: "Government Portal" });
+    setShowCreate(true);
+  };
+
+  const handleCloseCreate = () => {
+    setCreateError("");
+    setShowCreate(false);
+  };
+
+  // ─── Delete project ───────────────────────────────────────────────────────
   const handleDelete = async (project: Project) => {
     setDeletingId(project.id);
+    setDeleteError("");
+
     try {
       const res = await fetch(`/api/projects?id=${project.id}`, { method: "DELETE" });
       const json = await res.json();
+
       if (json.success) {
         setProjects((prev) => prev.filter((p) => p.id !== project.id));
         setShowDeleteConfirm(null);
+      } else {
+        setDeleteError(json.error || "ลบโปรเจคไม่สำเร็จ กรุณาลองใหม่");
       }
+    } catch {
+      setDeleteError("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่");
     } finally {
       setDeletingId(null);
     }
   };
 
+  const handleOpenDeleteConfirm = (project: Project) => {
+    setDeleteError("");
+    setShowDeleteConfirm(project);
+  };
+
+  // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <AppShell>
-      <div className="px-6 py-7 lg:px-8 max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-start justify-between mb-8"
-        >
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">โปรเจคทั้งหมด</h1>
-            <p className="text-slate-500 text-sm mt-1">
-              จัดการและตรวจสอบความสอดคล้องของเว็บไซต์ภาครัฐ
-            </p>
-          </div>
-          <Button onClick={() => setShowCreate(true)} size="md">
-            <Plus className="w-4 h-4" />
+      <PageHeader
+        title="โปรเจคทั้งหมด"
+        action={
+          <Button onClick={handleOpenCreate} size="md">
+            <Plus className="w-4 h-4" aria-hidden="true" />
             สร้างโปรเจคใหม่
           </Button>
-        </motion.div>
+        }
+      />
+      <div className="px-6 py-6 lg:px-8 max-w-7xl mx-auto">
 
         {/* Filters */}
         <motion.div
@@ -177,9 +234,27 @@ export default function ProjectsPage() {
           </div>
         </motion.div>
 
+        {/* Fetch error banner */}
+        {fetchError && !isLoading && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3 mb-4"
+          >
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            {fetchError}
+            <button
+              onClick={fetchProjects}
+              className="ml-auto text-xs font-medium underline underline-offset-2 hover:no-underline"
+            >
+              ลองใหม่
+            </button>
+          </motion.div>
+        )}
+
         {/* Projects grid */}
         <AnimatePresence mode="wait">
-          {loading ? (
+          {isLoading ? (
             <motion.div
               key="loading"
               initial={{ opacity: 0 }}
@@ -200,9 +275,8 @@ export default function ProjectsPage() {
               {projects.map((project, index) => (
                 <div key={project.id} className="relative group">
                   <ProjectCard project={project} index={index} />
-                  {/* Delete button overlay */}
                   <button
-                    onClick={() => setShowDeleteConfirm(project)}
+                    onClick={() => handleOpenDeleteConfirm(project)}
                     className="absolute top-3 right-3 w-9 h-9 rounded-lg bg-white/80 border border-slate-200 text-slate-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-sm"
                     aria-label={`ลบโปรเจค ${project.name}`}
                   >
@@ -211,12 +285,11 @@ export default function ProjectsPage() {
                 </div>
               ))}
 
-              {/* Create new card */}
               <motion.button
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: projects.length * 0.06, duration: 0.35 }}
-                onClick={() => setShowCreate(true)}
+                onClick={handleOpenCreate}
                 className="border-2 border-dashed border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 text-center hover:border-primary/40 hover:bg-primary/2 transition-all duration-200 group min-h-[200px]"
               >
                 <div className="w-12 h-12 rounded-2xl bg-slate-100 group-hover:bg-primary/10 flex items-center justify-center transition-colors">
@@ -245,7 +318,7 @@ export default function ProjectsPage() {
               <p className="text-sm text-slate-400 mb-6">
                 {search ? `ไม่พบโปรเจคที่ตรงกับ "${search}"` : "ยังไม่มีโปรเจคในสถานะนี้"}
               </p>
-              <Button onClick={() => setShowCreate(true)}>
+              <Button onClick={handleOpenCreate}>
                 <Plus className="w-4 h-4" />
                 สร้างโปรเจคแรก
               </Button>
@@ -257,7 +330,7 @@ export default function ProjectsPage() {
       {/* Create project modal */}
       <Modal
         open={showCreate}
-        onOpenChange={setShowCreate}
+        onOpenChange={(open) => { if (!open) handleCloseCreate(); }}
         title="สร้างโปรเจคใหม่"
         description="เพิ่มเว็บไซต์ภาครัฐใหม่เพื่อเริ่มการตรวจสอบความสอดคล้อง"
         size="md"
@@ -272,6 +345,7 @@ export default function ProjectsPage() {
               value={newProject.name}
               onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+              autoFocus
               required
             />
           </div>
@@ -302,13 +376,21 @@ export default function ProjectsPage() {
             </select>
           </div>
 
+          {createError && (
+            <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-2.5">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              {createError}
+            </div>
+          )}
+
           <div className="flex gap-3 pt-2">
             <Button
               type="button"
               variant="outline"
               size="md"
               className="flex-1"
-              onClick={() => setShowCreate(false)}
+              onClick={handleCloseCreate}
+              disabled={isCreating}
             >
               ยกเลิก
             </Button>
@@ -316,8 +398,8 @@ export default function ProjectsPage() {
               type="submit"
               size="md"
               className="flex-1"
-              loading={creating}
-              disabled={!newProject.name.trim()}
+              loading={isCreating}
+              disabled={!newProject.name.trim() || isCreating}
             >
               <Plus className="w-4 h-4" />
               สร้างโปรเจค
@@ -329,18 +411,25 @@ export default function ProjectsPage() {
       {/* Delete confirm modal */}
       <Modal
         open={!!showDeleteConfirm}
-        onOpenChange={(open) => !open && setShowDeleteConfirm(null)}
+        onOpenChange={(open) => { if (!open) { setShowDeleteConfirm(null); setDeleteError(""); } }}
         title="ลบโปรเจค"
         description={`คุณแน่ใจหรือไม่ว่าต้องการลบ "${showDeleteConfirm?.name}"? การกระทำนี้ไม่สามารถย้อนกลับได้`}
         size="sm"
       >
+        {deleteError && (
+          <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-2.5 mb-4">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            {deleteError}
+          </div>
+        )}
         <div className="flex gap-3">
           <Button
             type="button"
             variant="outline"
             size="md"
             className="flex-1"
-            onClick={() => setShowDeleteConfirm(null)}
+            onClick={() => { setShowDeleteConfirm(null); setDeleteError(""); }}
+            disabled={deletingId !== null}
           >
             ยกเลิก
           </Button>
@@ -349,6 +438,7 @@ export default function ProjectsPage() {
             size="md"
             className="flex-1 bg-red-500 hover:bg-red-600 focus:ring-red-300"
             loading={deletingId === showDeleteConfirm?.id}
+            disabled={deletingId !== null}
             onClick={() => showDeleteConfirm && handleDelete(showDeleteConfirm)}
           >
             <Trash2 className="w-4 h-4" />
