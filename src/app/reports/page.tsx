@@ -50,28 +50,27 @@ export default function ReportsPage() {
       <div className="px-6 py-7 lg:px-8 max-w-6xl mx-auto">
         <div className="animate-in fade-in-0 slide-in-from-top-2 duration-300 flex items-start justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">รายงานทั้งหมด</h1>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-slate-500 dark:text-muted-foreground text-sm">
               รายงานผลการตรวจสอบความสอดคล้องทั้งหมด
             </p>
           </div>
           <Button variant="outline" size="md">
             <Download className="w-4 h-4" aria-hidden="true" />
-            ส่งออกทั้งหมด
+            ดาวน์โหลดรายงาน
           </Button>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <Loader2 className="w-8 h-8 text-[#4361ee] animate-spin" aria-label="กำลังโหลด..." />
+            <Loader2 className="w-8 h-8 text-emerald-700 animate-spin" aria-label="กำลังประมวลผลข้อมูล..." />
           </div>
         ) : projects.length === 0 ? (
           <div className="animate-in fade-in-0 duration-300 flex flex-col items-center justify-center py-24 text-center">
             <div className="w-20 h-20 rounded-3xl bg-slate-100 flex items-center justify-center mb-4">
               <FolderOpen className="w-10 h-10 text-slate-300" aria-hidden="true" />
             </div>
-            <h3 className="text-lg font-semibold text-slate-700 mb-1">ยังไม่มีรายงาน</h3>
-            <p className="text-sm text-slate-400">วิเคราะห์โปรเจคเพื่อสร้างรายงาน</p>
+            <h3 className="text-lg font-semibold text-slate-700 mb-1">ไม่พบข้อมูลการวิเคราะห์</h3>
+            <p className="text-sm text-slate-400">เริ่มวิเคราะห์เอกสารเพื่อสร้างรายงาน</p>
           </div>
         ) : (
           <>
@@ -81,7 +80,7 @@ export default function ReportsPage() {
                 {
                   label: "รายงานทั้งหมด",
                   value: projects.length,
-                  color: "bg-blue-50 text-blue-700 border-blue-100",
+                  color: "bg-emerald-50 text-emerald-700 border-emerald-100",
                 },
                 {
                   label: "คะแนนเฉลี่ย",
@@ -96,7 +95,7 @@ export default function ReportsPage() {
               ].map((stat, i) => (
                 <div
                   key={stat.label}
-                  className={`animate-in fade-in-0 slide-in-from-bottom-3 p-5 rounded-2xl border ${stat.color} bg-white shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)]`}
+                  className={`animate-in fade-in-0 slide-in-from-bottom-3 p-5 rounded-2xl border ${stat.color} bg-white shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)]`}
                   style={{ animationDelay: `${i * 80}ms`, animationFillMode: "both" }}
                 >
                   <div className="text-3xl font-bold mb-1">{stat.value}</div>
@@ -106,7 +105,7 @@ export default function ReportsPage() {
             </div>
 
             {/* Reports list */}
-            <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 overflow-hidden">
               <div className="p-6 border-b border-slate-100">
                 <h2 className="font-semibold text-slate-900">รายงานล่าสุด</h2>
               </div>
@@ -146,7 +145,7 @@ export default function ReportsPage() {
                               project.score >= 80
                                 ? "text-emerald-600"
                                 : project.score >= 60
-                                ? "text-blue-600"
+                                ? "text-emerald-600"
                                 : "text-amber-600"
                             }`}
                           >
@@ -157,7 +156,7 @@ export default function ReportsPage() {
                       </div>
                     )}
                     <Badge variant={project.status as "completed" | "in_progress"} dot>
-                      {project.status === "completed" ? "เสร็จสิ้น" : "กำลังดำเนินการ"}
+                      {project.status === "completed" ? "วิเคราะห์แล้ว" : "กำลังตรวจสอบ"}
                     </Badge>
                     <Link href={`/projects/${project.id}/report`}>
                       <Button variant="ghost" size="sm">

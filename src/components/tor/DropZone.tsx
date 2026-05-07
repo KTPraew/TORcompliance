@@ -140,7 +140,7 @@ export function DropZone({
               <div className="w-14 h-14 rounded-2xl gradient-primary flex items-center justify-center">
                 <Upload className="w-7 h-7 text-white" />
               </div>
-              <p className="text-sm font-semibold text-primary">วางไฟล์ที่นี่</p>
+              <p className="text-sm font-semibold text-emerald-700">วางไฟล์ที่นี่</p>
             </motion.div>
           ) : (
             <motion.div
@@ -152,7 +152,7 @@ export function DropZone({
             >
               <div className="relative">
                 <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <CloudUpload className="w-7 h-7 text-primary" />
+                  <CloudUpload className="w-7 h-7 text-emerald-700" />
                 </div>
                 <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full gradient-primary flex items-center justify-center">
                   <span className="text-white text-[10px] font-bold">+</span>
@@ -161,7 +161,7 @@ export function DropZone({
               <div>
                 <p className="text-sm font-semibold text-slate-700 mb-1">{label}</p>
                 <p className="text-xs text-slate-400">{sublabel}</p>
-                <p className="text-xs text-primary mt-1.5 font-medium">
+                <p className="text-xs text-emerald-700 mt-1.5 font-medium">
                   คลิกเพื่อเลือกไฟล์ หรือลากและวางที่นี่
                 </p>
               </div>

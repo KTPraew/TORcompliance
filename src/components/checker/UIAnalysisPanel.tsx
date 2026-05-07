@@ -41,12 +41,12 @@ const SEVERITY_CONFIG = {
   },
   info: {
     label: "ข้อมูล",
-    bg: "bg-blue-50",
-    border: "border-blue-200",
-    text: "text-blue-700",
-    badge: "bg-blue-100 text-blue-700",
+    bg: "bg-emerald-50",
+    border: "border-emerald-200",
+    text: "text-emerald-700",
+    badge: "bg-emerald-100 text-emerald-700",
     icon: Info,
-    iconColor: "text-blue-500",
+    iconColor: "text-emerald-500",
   },
 } as const;
 
@@ -189,7 +189,7 @@ function IssuesList({ issues }: { issues: ComplianceIssue[] }) {
       {issues.length > INITIAL_SHOW && (
         <button
           onClick={() => setShowAll((v) => !v)}
-          className="w-full py-2 text-xs font-medium text-primary hover:text-primary-dark flex items-center justify-center gap-1 transition-colors"
+          className="w-full py-2 text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center justify-center gap-1 transition-colors"
         >
           {showAll ? (
             <><ChevronUp className="w-3.5 h-3.5" /> ซ่อนรายการ</>
@@ -317,19 +317,19 @@ export function UIAnalysisPanel({
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className="space-y-4 p-5 bg-blue-50 rounded-2xl border border-blue-100"
+                className="space-y-4 p-5 bg-emerald-50 rounded-2xl border border-emerald-100"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl gradient-primary flex items-center justify-center">
                     <Zap className="w-4 h-4 text-white animate-pulse" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-blue-900">AI กำลังวิเคราะห์ UI</p>
-                    <p className="text-xs text-blue-600">{step}</p>
+                    <p className="text-sm font-semibold text-emerald-900">AI กำลังวิเคราะห์ UI</p>
+                    <p className="text-xs text-emerald-600">{step}</p>
                   </div>
                 </div>
                 <Progress value={progress} color="primary" size="md" animated />
-                <p className="text-xs text-blue-500 text-center">{Math.round(progress)}% เสร็จสิ้น</p>
+                <p className="text-xs text-emerald-500 text-center">{Math.round(progress)}% เสร็จสิ้น</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -357,7 +357,7 @@ export function UIAnalysisPanel({
               result.overallScore >= 80
                 ? "bg-emerald-50 border-emerald-200"
                 : result.overallScore >= 60
-                ? "bg-blue-50 border-blue-200"
+                ? "bg-emerald-50 border-emerald-200"
                 : "bg-amber-50 border-amber-200"
             }`}
           >
@@ -366,7 +366,7 @@ export function UIAnalysisPanel({
                 result.overallScore >= 80
                   ? "bg-emerald-500 text-white"
                   : result.overallScore >= 60
-                  ? "bg-blue-500 text-white"
+                  ? "bg-emerald-500 text-white"
                   : "bg-amber-500 text-white"
               }`}
             >

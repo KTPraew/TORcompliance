@@ -47,7 +47,7 @@ export function Progress({
   const getColor = () => {
     if (color === "auto") {
       if (percentage >= 80) return "bg-emerald-500";
-      if (percentage >= 60) return "bg-[#4361ee]";
+      if (percentage >= 60) return "bg-primary";
       if (percentage >= 40) return "bg-amber-500";
       return "bg-red-500";
     }

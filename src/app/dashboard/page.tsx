@@ -8,12 +8,10 @@ import {
   TrendingUp,
   FileBarChart2,
   ArrowRight,
-  Sparkles,
   ChevronRight,
   Loader2,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
-import { StatsCard } from "@/components/dashboard/StatsCard";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 import { Progress } from "@/components/ui/Progress";
 import type { Project } from "@/types";
@@ -21,6 +19,7 @@ import type { Project } from "@/types";
 
 type CategoryStat = { category: string; score: number; hasData: boolean };
 type ActivityItem = { id: string; action: string; project: string; time: string; type: string };
+
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -40,9 +39,7 @@ export default function DashboardPage() {
         setCategoryStats(dashboardJson.data.categoryStats ?? []);
         setRecentActivity(dashboardJson.data.recentActivity ?? []);
       }
-    }).catch(() => {
-      // Network error — show empty states
-    }).finally(() => setLoading(false));
+    }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   const totalProjects = projects.length;
@@ -53,20 +50,13 @@ export default function DashboardPage() {
       ? Math.round(scoredProjects.reduce((sum, p) => sum + p.score, 0) / scoredProjects.length)
       : 0;
   const reportsGenerated = projects.filter((p) => p.status === "completed").length;
-
   const recentProjects = projects.slice(0, 4);
 
   return (
     <AppShell>
       {/* Page top bar */}
-      <div className="sticky top-0 z-20 hidden md:flex items-center justify-between px-8 h-14 bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <h1 className="text-[15px] font-semibold text-slate-900">แดชบอร์ด</h1>
-        <Link href="/projects">
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-white gradient-primary px-3.5 py-2 rounded-xl shadow-sm shadow-blue-400/20 hover:opacity-90 transition-opacity">
-            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-            สร้างโปรเจคใหม่
-          </span>
-        </Link>
+      <div className="sticky top-0 z-20 hidden md:flex items-center px-8 h-14 bg-white/90 dark:bg-card/90 backdrop-blur-md border-b border-slate-100 dark:border-border">
+        <h1 className="text-[15px] font-semibold text-slate-900 dark:text-foreground">แดชบอร์ด</h1>
       </div>
 
       <div className="px-6 py-6 lg:px-8 max-w-7xl mx-auto">
@@ -74,8 +64,8 @@ export default function DashboardPage() {
         <div
           className="animate-in fade-in-0 duration-300 mb-6 rounded-2xl p-6 flex items-center justify-between overflow-hidden relative"
           style={{
-            background: "linear-gradient(135deg, #2d44c5 0%, #4361ee 60%, #748ffc 100%)",
-            boxShadow: "0 4px 24px rgba(67,97,238,0.22)",
+            background: "linear-gradient(135deg, #047857 0%, #059669 60%, #34d399 100%)",
+            boxShadow: "0 4px 24px rgba(5,150,105,0.22)",
             animationFillMode: "both",
           }}
         >
@@ -84,47 +74,41 @@ export default function DashboardPage() {
             <div className="absolute right-8 bottom-[-40px] w-40 h-40 rounded-full bg-white/[0.05]" />
           </div>
           <div className="relative z-10">
-            <p className="font-bold text-white text-base mb-0.5">AI Compliance Engine พร้อมใช้งาน</p>
-            <p className="text-white/65 text-sm">วิเคราะห์ TOR อัตโนมัติด้วย AI เพื่อตรวจสอบมาตรฐาน WCAG & TWCAG</p>
+            <p className="font-bold text-white text-base mb-0.5">เริ่มวิเคราะห์เอกสาร TOR</p>
+            <p className="text-white/65 text-sm">ประมวลผลอัตโนมัติด้วย AI — ตรวจสอบมาตรฐาน WCAG 2.1, TWCAG และนโยบายเว็บไซต์ภาครัฐ</p>
           </div>
           <Link href="/projects" className="relative z-10 flex-shrink-0">
-            <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#4361ee] bg-white hover:bg-white/90 transition-colors px-4 py-2.5 rounded-xl shadow-sm">
+            <span className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-white hover:bg-white/90 transition-colors px-4 py-2.5 rounded-xl shadow-sm">
               เริ่มต้น
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </span>
           </Link>
         </div>
 
-        {/* Stats grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          <StatsCard
-            title="โปรเจคทั้งหมด"
-            value={loading ? "-" : totalProjects}
-            icon={FolderOpen}
-            color="indigo"
-            index={0}
-          />
-          <StatsCard
-            title="Checklist ที่วิเคราะห์"
-            value={loading ? "-" : checklistsAnalyzed}
-            icon={ClipboardList}
-            color="purple"
-            index={1}
-          />
-          <StatsCard
-            title="คะแนนเฉลี่ย"
-            value={loading ? "-" : `${avgComplianceScore}%`}
-            icon={TrendingUp}
-            color="emerald"
-            index={2}
-          />
-          <StatsCard
-            title="รายงานที่ออก"
-            value={loading ? "-" : reportsGenerated}
-            icon={FileBarChart2}
-            color="amber"
-            index={3}
-          />
+        {/* Stats band */}
+        <div className="flex flex-wrap items-center gap-0 bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border shadow-sm mb-6 overflow-hidden">
+          {[
+            { label: "โปรเจค", value: loading ? "—" : totalProjects, icon: FolderOpen },
+            { label: "Checklist", value: loading ? "—" : checklistsAnalyzed, icon: ClipboardList },
+            { label: "คะแนนเฉลี่ย", value: loading ? "—" : `${avgComplianceScore}%`, icon: TrendingUp },
+            { label: "รายงาน", value: loading ? "—" : reportsGenerated, icon: FileBarChart2 },
+          ].map((stat, i) => {
+            const Icon = stat.icon;
+            return (
+              <div key={stat.label} className="flex items-center gap-3 px-6 py-4 flex-1 min-w-[140px] border-r border-slate-100 dark:border-border last:border-r-0">
+                <Icon className="w-4 h-4 text-emerald-600 flex-shrink-0" aria-hidden="true" />
+                <div>
+                  <div className="text-xl font-bold text-slate-900 dark:text-foreground tabular-nums leading-none">{stat.value}</div>
+                  <div className="text-xs text-slate-500 dark:text-muted-foreground mt-0.5">{stat.label}</div>
+                </div>
+                {i === 2 && avgComplianceScore > 0 && !loading && (
+                  <div className={`ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md ${avgComplianceScore >= 80 ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50" : avgComplianceScore >= 60 ? "bg-accent text-emerald-700" : "bg-amber-50 text-amber-600 dark:bg-amber-950/50"}`}>
+                    {avgComplianceScore >= 80 ? "ดี" : avgComplianceScore >= 60 ? "ผ่าน" : "ต้องปรับ"}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Main content grid */}
@@ -132,29 +116,29 @@ export default function DashboardPage() {
           {/* Recent projects */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-slate-900 text-base">โปรเจคล่าสุด</h2>
+              <h2 className="font-bold text-slate-900 dark:text-foreground text-base">โปรเจคล่าสุด</h2>
               <Link
                 href="/projects"
-                className="flex items-center gap-1 text-xs text-[#4361ee] hover:text-[#2d44c5] font-medium transition-colors"
+                className="flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-800 font-medium transition-colors"
               >
                 ดูทั้งหมด
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 gap-3">
+            <div className="space-y-3">
               {loading ? (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-6 h-6 text-[#4361ee] animate-spin" />
+                  <Loader2 className="w-6 h-6 text-emerald-600 animate-spin" aria-label="กำลังประมวลผลข้อมูล..." />
                 </div>
               ) : recentProjects.length > 0 ? (
                 recentProjects.map((project: Project, index: number) => (
                   <ProjectCard key={project.id} project={project} index={index} />
                 ))
               ) : (
-                <div className="bg-white rounded-2xl border border-slate-100/80 p-12 text-center" style={{ boxShadow: "0 1px 4px rgba(67,97,238,0.04)" }}>
-                  <FolderOpen className="w-10 h-10 text-[#c7d2fe] mx-auto mb-3" />
-                  <p className="text-sm text-slate-400 font-medium">ยังไม่มีโปรเจค</p>
-                  <p className="text-xs text-slate-300 mt-1">เริ่มสร้างโปรเจคแรกของคุณ</p>
+                <div className="bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border p-12 text-center">
+                  <FolderOpen className="w-10 h-10 text-accent-foreground/30 mx-auto mb-3" />
+                  <p className="text-sm text-slate-400 dark:text-muted-foreground font-medium">ยังไม่มีเอกสาร</p>
+                  <p className="text-xs text-slate-300 dark:text-muted-foreground/60 mt-1">เริ่มต้นด้วยการอัปโหลดเอกสาร</p>
                 </div>
               )}
             </div>
@@ -163,15 +147,15 @@ export default function DashboardPage() {
           {/* Right column */}
           <div className="space-y-4">
             {/* Compliance overview */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)]">
-              <h3 className="font-semibold text-slate-900 mb-4 text-sm">ภาพรวมความสอดคล้อง</h3>
+            <div className="bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border p-5 shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)]">
+              <h2 className="font-semibold text-slate-900 dark:text-foreground mb-4 text-sm">ภาพรวมความสอดคล้อง</h2>
               {loading ? (
                 <div className="flex items-center justify-center py-6">
-                  <Loader2 className="w-5 h-5 text-[#4361ee] animate-spin" aria-label="กำลังโหลด..." />
+                  <Loader2 className="w-5 h-5 text-emerald-600 animate-spin" aria-label="กำลังประมวลผลข้อมูล..." />
                 </div>
               ) : categoryStats.length === 0 || categoryStats.every((c) => !c.hasData) ? (
                 <p className="text-xs text-slate-400 text-center py-6">
-                  ยังไม่มีข้อมูล<br />วิเคราะห์โปรเจคเพื่อดูผล
+                  ยังไม่มีข้อมูล<br />วิเคราะห์เอกสารเพื่อดูผลลัพธ์
                 </p>
               ) : (
                 <div className="space-y-3.5">
@@ -190,26 +174,26 @@ export default function DashboardPage() {
             </div>
 
             {/* Recent activity */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)]">
-              <h3 className="font-semibold text-slate-900 mb-4 text-sm">กิจกรรมล่าสุด</h3>
+            <div className="bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border p-5 shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)]">
+              <h2 className="font-semibold text-slate-900 dark:text-foreground mb-4 text-sm">กิจกรรมล่าสุด</h2>
               {loading ? (
                 <div className="flex items-center justify-center py-6">
-                  <Loader2 className="w-5 h-5 text-[#4361ee] animate-spin" aria-label="กำลังโหลด..." />
+                  <Loader2 className="w-5 h-5 text-emerald-600 animate-spin" aria-label="กำลังประมวลผลข้อมูล..." />
                 </div>
               ) : recentActivity.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-6">ยังไม่มีกิจกรรม</p>
+                <p className="text-xs text-slate-400 text-center py-6">ไม่พบข้อมูลการวิเคราะห์</p>
               ) : (
                 <div className="space-y-3">
                   {recentActivity.map((activity) => {
                     const dotColor = activity.type === "analysis" ? "bg-emerald-400"
-                      : activity.type === "report" ? "bg-[#4361ee]"
-                      : activity.type === "upload" ? "bg-[#748ffc]"
+                      : activity.type === "report" ? "bg-primary"
+                      : activity.type === "upload" ? "bg-primary-light"
                       : "bg-amber-400";
                     return (
                       <div key={activity.id} className="flex items-start gap-3">
                         <div className={`w-2 h-2 rounded-full flex-shrink-0 mt-1.5 ${dotColor}`} aria-hidden="true" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-slate-800">{activity.action}</p>
+                          <p className="text-xs font-medium text-slate-800 dark:text-foreground">{activity.action}</p>
                           <p className="text-[11px] text-slate-400 truncate mt-0.5">{activity.project}</p>
                         </div>
                         <span className="text-[10px] text-slate-400 flex-shrink-0 mt-0.5">{activity.time}</span>

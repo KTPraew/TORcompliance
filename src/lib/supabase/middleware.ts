@@ -44,14 +44,17 @@ export async function updateSession(request: NextRequest) {
     user = null
   }
 
-  const isAuthRoute =
-    request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/auth')
+  const { pathname } = request.nextUrl
 
-  if (!user && !isAuthRoute) {
+  const isPublicRoute =
+    pathname === '/' ||
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/auth')
+
+  if (!user && !isPublicRoute) {
     // Redirect to login, preserving the original destination
     const url = request.nextUrl.clone()
-    const next = request.nextUrl.pathname + request.nextUrl.search
+    const next = pathname + request.nextUrl.search
     url.pathname = '/login'
     url.searchParams.set('next', next)
     return NextResponse.redirect(url)

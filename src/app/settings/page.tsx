@@ -135,7 +135,7 @@ export default function SettingsPage() {
       setProfile((p) => ({ ...p, avatar_url: urlWithBust }));
     } catch (err) {
       console.error("Avatar upload error:", err);
-      setAvatarError(err instanceof Error ? err.message : "อัปโหลดรูปไม่สำเร็จ กรุณาลองใหม่");
+      setAvatarError(err instanceof Error ? err.message : "ไม่สามารถอัปโหลดรูปภาพได้ กรุณาลองอีกครั้ง");
     } finally {
       setAvatarUploading(false);
       // Reset input so the same file can be re-uploaded
@@ -191,7 +191,7 @@ export default function SettingsPage() {
 
     if (error) {
       setPasswordSave("error");
-      setPasswordError("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+      setPasswordError("ระบบขัดข้อง กรุณาลองอีกครั้ง");
     } else {
       setPasswordSave("saved");
       setCurrentPassword("");
@@ -215,8 +215,7 @@ export default function SettingsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-2xl font-bold text-slate-900">ตั้งค่า</h1>
-          <p className="text-slate-500 text-sm mt-1">จัดการบัญชีและการตั้งค่าระบบ</p>
+          <p className="text-slate-500 dark:text-muted-foreground text-sm mt-1">จัดการบัญชีและการตั้งค่าระบบ</p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -225,7 +224,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-3 h-fit"
+            className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-3 h-fit"
           >
             <nav className="space-y-0.5">
               {settingsTabs.map((tab) => {
@@ -257,7 +256,7 @@ export default function SettingsPage() {
           >
             {activeTab === "profile" && (
               <>
-                <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-6">
+                <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-6">
                   <h2 className="font-semibold text-slate-900 mb-5">ข้อมูลส่วนตัว</h2>
 
                   {loadingProfile ? (
@@ -313,7 +312,7 @@ export default function SettingsPage() {
                           <p className="text-sm text-slate-500">{email}</p>
                           <button
                             onClick={() => !avatarUploading && avatarInputRef.current?.click()}
-                            className="text-xs text-primary font-medium mt-0.5 hover:underline disabled:opacity-50"
+                            className="text-xs text-emerald-700 font-medium mt-0.5 hover:underline disabled:opacity-50"
                             disabled={avatarUploading}
                           >
                             {avatarUploading ? "กำลังอัปโหลด..." : "เปลี่ยนรูปโปรไฟล์"}
@@ -395,32 +394,33 @@ export default function SettingsPage() {
                     {profileSave === "saving" ? (
                       <><Loader2 className="w-4 h-4 animate-spin" />กำลังบันทึก...</>
                     ) : profileSave === "saved" ? (
-                      <><CheckCircle2 className="w-4 h-4" />บันทึกแล้ว</>
+                      <><CheckCircle2 className="w-4 h-4" />บันทึกเรียบร้อย</>
                     ) : profileSave === "error" ? (
-                      <><AlertCircle className="w-4 h-4" />เกิดข้อผิดพลาด</>
+                      <><AlertCircle className="w-4 h-4" />ไม่สามารถบันทึกได้</>
                     ) : (
                       <><Save className="w-4 h-4" />บันทึกการตั้งค่า</>
                     )}
                   </Button>
                 </div>
 
-                {/* Theme toggle — only render after hydration to avoid mismatch */}
+                {/* Theme toggle */}
                 {mounted && (
-                  <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-6">
-                    <h2 className="font-semibold text-slate-900 mb-5">การแสดงผล</h2>
+                  <div className="bg-white dark:bg-card rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 dark:border-border p-6">
+                    <h2 className="font-semibold text-slate-900 dark:text-foreground mb-5">การแสดงผล</h2>
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-slate-700">โหมดการแสดงผล</p>
-                        <p className="text-xs text-slate-500 mt-0.5">เลือกระหว่าง light หรือ dark mode</p>
+                        <p className="text-sm font-medium text-slate-700 dark:text-foreground">โหมดการแสดงผล</p>
+                        <p className="text-xs text-slate-500 dark:text-muted-foreground mt-0.5">เลือกระหว่าง light หรือ dark mode</p>
                       </div>
-                      <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
+                      <div className="flex items-center gap-1 bg-slate-100 dark:bg-muted rounded-xl p-1">
                         <button
                           onClick={() => setTheme("light")}
                           aria-label="Light mode"
-                          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                          aria-pressed={theme === "light"}
+                          className={`flex items-center justify-center gap-1.5 h-9 min-w-[72px] px-3 rounded-lg text-xs font-medium transition-all ${
                             theme === "light"
                               ? "bg-white shadow-sm text-slate-900"
-                              : "text-slate-500 hover:text-slate-700"
+                              : "text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-foreground"
                           }`}
                         >
                           <Sun className="w-3.5 h-3.5" aria-hidden="true" />
@@ -429,10 +429,11 @@ export default function SettingsPage() {
                         <button
                           onClick={() => setTheme("dark")}
                           aria-label="Dark mode"
-                          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                          aria-pressed={theme === "dark"}
+                          className={`flex items-center justify-center gap-1.5 h-9 min-w-[72px] px-3 rounded-lg text-xs font-medium transition-all ${
                             theme === "dark"
                               ? "bg-slate-800 shadow-sm text-white"
-                              : "text-slate-500 hover:text-slate-700"
+                              : "text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-foreground"
                           }`}
                         >
                           <Moon className="w-3.5 h-3.5" aria-hidden="true" />
@@ -446,12 +447,12 @@ export default function SettingsPage() {
             )}
 
             {activeTab === "notifications" && (
-              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-6">
+              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-6">
                 <h2 className="font-semibold text-slate-900 mb-5">การแจ้งเตือน</h2>
                 <div className="space-y-4">
                   {[
-                    { label: "เมื่อการวิเคราะห์ TOR เสร็จสิ้น", checked: true },
-                    { label: "เมื่อการตรวจสอบ UI เสร็จสิ้น", checked: true },
+                    { label: "เมื่อวิเคราะห์ TOR เสร็จสมบูรณ์", checked: true },
+                    { label: "เมื่อตรวจสอบ UI เสร็จสมบูรณ์", checked: true },
                     { label: "เมื่อโปรเจคถูกแชร์", checked: false },
                     { label: "รายงานประจำสัปดาห์", checked: true },
                     { label: "อัปเดตมาตรฐานใหม่", checked: true },
@@ -477,7 +478,7 @@ export default function SettingsPage() {
 
             {activeTab === "security" && (
               <>
-                <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-6">
+                <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-6">
                   <h2 className="font-semibold text-slate-900 mb-5">เปลี่ยนรหัสผ่าน</h2>
                   <div className="space-y-4">
                     <div className="space-y-1.5">
@@ -535,7 +536,7 @@ export default function SettingsPage() {
                     {passwordSave === "saving" ? (
                       <><Loader2 className="w-4 h-4 animate-spin" />กำลังบันทึก...</>
                     ) : passwordSave === "saved" ? (
-                      <><CheckCircle2 className="w-4 h-4" />เปลี่ยนรหัสผ่านแล้ว</>
+                      <><CheckCircle2 className="w-4 h-4" />บันทึกเรียบร้อย</>
                     ) : (
                       <><Save className="w-4 h-4" />เปลี่ยนรหัสผ่าน</>
                     )}
@@ -545,7 +546,7 @@ export default function SettingsPage() {
             )}
 
             {activeTab === "standards" && (
-              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-6">
+              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-6">
                 <h2 className="font-semibold text-slate-900 mb-5">มาตรฐานที่ตรวจสอบ</h2>
                 <div className="space-y-3">
                   {[

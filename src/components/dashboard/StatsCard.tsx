@@ -7,20 +7,20 @@ interface StatsCardProps {
   title: string;
   value: string | number;
   icon: LucideIcon;
-  color?: "indigo" | "blue" | "emerald" | "amber" | "purple" | "rose";
+  color?: "primary" | "blue" | "emerald" | "amber" | "purple" | "rose";
   index?: number;
 }
 
 const colorConfig = {
-  indigo:  { iconBg: "bg-[#eef2ff]",   icon: "text-[#4361ee]" },
-  blue:    { iconBg: "bg-blue-50",      icon: "text-blue-600"  },
-  emerald: { iconBg: "bg-emerald-50",   icon: "text-emerald-600" },
+  primary: { iconBg: "bg-emerald-50",   icon: "text-emerald-700" },
+  blue:    { iconBg: "bg-emerald-50",      icon: "text-emerald-600"  },
+  emerald: { iconBg: "bg-emerald-50",   icon: "text-emerald-700" },
   amber:   { iconBg: "bg-amber-50",     icon: "text-amber-600" },
   purple:  { iconBg: "bg-purple-50",    icon: "text-purple-600" },
   rose:    { iconBg: "bg-rose-50",      icon: "text-rose-600"  },
 };
 
-export function StatsCard({ title, value, icon: Icon, color = "indigo", index = 0 }: StatsCardProps) {
+export function StatsCard({ title, value, icon: Icon, color = "primary", index = 0 }: StatsCardProps) {
   const { iconBg, icon } = colorConfig[color];
   return (
     <div

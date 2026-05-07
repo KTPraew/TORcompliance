@@ -90,7 +90,7 @@ export async function analyzeUI(
 
 export function getScoreColor(score: number): string {
   if (score >= 90) return "text-emerald-600";
-  if (score >= 70) return "text-blue-600";
+  if (score >= 70) return "text-emerald-600";
   if (score >= 50) return "text-amber-500";
   return "text-red-500";
 }
@@ -104,7 +104,7 @@ export function getScoreLabel(score: number): string {
 
 export function getScoreBgColor(score: number): string {
   if (score >= 90) return "bg-emerald-50 border-emerald-200";
-  if (score >= 70) return "bg-blue-50 border-blue-200";
+  if (score >= 70) return "bg-emerald-50 border-emerald-200";
   if (score >= 50) return "bg-amber-50 border-amber-200";
   return "bg-red-50 border-red-200";
 }

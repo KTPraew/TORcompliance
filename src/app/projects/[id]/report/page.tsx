@@ -34,7 +34,7 @@ type CategoryScore = {
 };
 
 const categoryColorMap: Record<string, string> = {
-  Accessibility: "bg-blue-50 border-blue-200 text-blue-700",
+  Accessibility: "bg-emerald-50 border-emerald-200 text-emerald-700",
   Policy: "bg-purple-50 border-purple-200 text-purple-700",
   Technical: "bg-emerald-50 border-emerald-200 text-emerald-700",
   Content: "bg-amber-50 border-amber-200 text-amber-700",
@@ -94,7 +94,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
     return (
       <AppShell>
         <div className="flex items-center justify-center h-full py-32">
-          <Loader2 className="w-8 h-8 text-[#4361ee] animate-spin" />
+          <Loader2 className="w-8 h-8 text-emerald-700 animate-spin" />
         </div>
       </AppShell>
     );
@@ -140,7 +140,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
         >
           <Link
             href={`/projects/${id}`}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-primary transition-colors mb-4"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-emerald-700 transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             กลับไปโปรเจค
@@ -149,7 +149,7 @@ export default function ReportPage({ params }: { params: { id: string } }) {
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3">
               <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <FileBarChart2 className="w-5 h-5 text-primary" />
+                <FileBarChart2 className="w-5 h-5 text-emerald-700" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-slate-900">
@@ -230,11 +230,11 @@ export default function ReportPage({ params }: { params: { id: string } }) {
                   <div className="text-xs text-amber-600 font-medium">ต้องตรวจสอบ</div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
-                <ShieldCheck className="w-8 h-8 text-blue-500" />
+              <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                <ShieldCheck className="w-8 h-8 text-emerald-500" />
                 <div>
-                  <div className="text-2xl font-bold text-blue-700">{project.checklistCount}</div>
-                  <div className="text-xs text-blue-600 font-medium">รายการทั้งหมด</div>
+                  <div className="text-2xl font-bold text-emerald-700">{project.checklistCount}</div>
+                  <div className="text-xs text-emerald-600 font-medium">รายการทั้งหมด</div>
                 </div>
               </div>
             </div>

@@ -39,7 +39,7 @@ export function Modal({
         <Dialog.Content
           className={cn(
             "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50",
-            "bg-white rounded-2xl shadow-modal w-full",
+            "bg-white dark:bg-card rounded-2xl shadow-modal w-full",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
             "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
             "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -64,7 +64,10 @@ export function Modal({
                   </Dialog.Description>
                 )}
               </div>
-              <Dialog.Close className="text-slate-400 hover:text-slate-600 transition-colors ml-4 mt-0.5" aria-label="ปิด">
+              <Dialog.Close
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 dark:text-muted-foreground dark:hover:text-foreground hover:bg-slate-50 dark:hover:bg-muted transition-colors ml-2 flex-shrink-0"
+                aria-label="ปิด"
+              >
                 <X className="w-5 h-5" aria-hidden="true" />
               </Dialog.Close>
             </div>

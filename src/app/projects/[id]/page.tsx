@@ -282,7 +282,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
     return (
       <AppShell>
         <div className="flex items-center justify-center h-full py-32">
-          <Loader2 className="w-8 h-8 text-[#4361ee] animate-spin" />
+          <Loader2 className="w-8 h-8 text-emerald-700 animate-spin" />
         </div>
       </AppShell>
     );
@@ -316,7 +316,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
         >
           <Link
             href="/projects"
-            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-[#4361ee] transition-colors mb-4"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-emerald-700 transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             กลับไปโปรเจคทั้งหมด
@@ -324,7 +324,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3">
-              <div className="w-11 h-11 rounded-2xl gradient-primary flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md shadow-blue-500/20">
+              <div className="w-11 h-11 rounded-2xl gradient-primary flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md shadow-emerald-500/20">
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -341,13 +341,13 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
             {checklist.length > 0 && (
               <div className="flex items-center gap-2 flex-shrink-0">
                 {savedAt && (
-                  <span className="text-xs text-emerald-600 flex items-center gap-1">
+                  <span className="text-xs text-emerald-700 flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    บันทึกแล้ว
+                    บันทึกเรียบร้อย
                   </span>
                 )}
                 <Button
-                  variant="secondary"
+                  variant="default"
                   size="md"
                   onClick={handleSaveResults}
                   loading={saving}
@@ -356,7 +356,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                   บันทึกผล
                 </Button>
                 <Link href={`/projects/${id}/report`}>
-                  <Button variant="secondary" size="md">
+                  <Button variant="outline" size="md">
                     <BarChart3 className="w-4 h-4" />
                     ดูรายงาน
                   </Button>
@@ -372,11 +372,11 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-5 mb-6"
+            className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-5 mb-6"
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-semibold text-slate-700">ความคืบหน้าการตรวจสอบ</span>
-              <span className="text-2xl font-bold text-[#4361ee]">{score}%</span>
+              <span className="text-2xl font-bold text-emerald-700">{score}%</span>
             </div>
             <Progress value={score} size="lg" animated />
             <div className="flex items-center gap-5 mt-3">
@@ -406,11 +406,11 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-6"
+              className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-6"
             >
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-8 h-8 rounded-xl bg-[#eef2ff] flex items-center justify-center">
-                  <Upload className="w-4 h-4 text-[#4361ee]" />
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center">
+                  <Upload className="w-4 h-4 text-emerald-700" />
                 </div>
                 <div>
                   <h2 className="font-semibold text-slate-900">อัปโหลดเอกสาร TOR</h2>
@@ -435,13 +435,13 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
-                    className="mt-4 space-y-3 p-4 bg-[#eef2ff] rounded-xl border border-[#c7d2fe]"
+                    className="mt-4 space-y-3 p-4 bg-emerald-50 rounded-xl border border-[#a7f3d0]"
                   >
                     <div className="flex items-center gap-3">
-                      <Loader2 className="w-5 h-5 text-[#4361ee] animate-spin" />
+                      <Loader2 className="w-5 h-5 text-emerald-700 animate-spin" />
                       <div>
-                        <p className="text-sm font-medium text-[#4361ee]">AI กำลังวิเคราะห์ TOR</p>
-                        <p className="text-xs text-[#748ffc]">{analyzeStep}</p>
+                        <p className="text-sm font-medium text-emerald-700">AI กำลังวิเคราะห์ TOR</p>
+                        <p className="text-xs text-emerald-400">{analyzeStep}</p>
                       </div>
                     </div>
                     <Progress value={analyzeProgress} color="primary" animated />
@@ -474,13 +474,13 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 overflow-hidden"
+                className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 overflow-hidden"
               >
                 <div className="p-6 border-b border-slate-100">
                   <div className="flex items-center justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-xl bg-[#eef2ff] flex items-center justify-center">
-                        <Cpu className="w-4 h-4 text-[#4361ee]" />
+                      <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center">
+                        <Cpu className="w-4 h-4 text-emerald-700" />
                       </div>
                       <div>
                         <h2 className="font-semibold text-slate-900">Checklist ความสอดคล้อง</h2>
@@ -506,14 +506,14 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                           onClick={() => setActiveTab(tab.value)}
                           className={`flex-1 flex flex-col items-center py-2 px-3 rounded-lg text-xs font-medium transition-all duration-150 ${
                             activeTab === tab.value
-                              ? "bg-white shadow-sm text-[#4361ee]"
+                              ? "bg-white shadow-sm text-emerald-700"
                               : "text-slate-500 hover:text-slate-700"
                           }`}
                         >
                           <span>{tab.label}</span>
                           <span
                             className={`text-[10px] mt-0.5 font-bold ${
-                              activeTab === tab.value ? "text-[#4361ee]" : "text-slate-400"
+                              activeTab === tab.value ? "text-emerald-700" : "text-slate-400"
                             }`}
                           >
                             {count > 0 ? `${tabScore}% (${count})` : "0"}
@@ -551,7 +551,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
               initial={{ opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-6"
+              className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-6"
             >
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center">
@@ -575,12 +575,12 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
               initial={{ opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.35 }}
-              className="bg-[#eef2ff] rounded-2xl border border-[#c7d2fe] p-5"
+              className="bg-emerald-50 rounded-2xl border border-[#a7f3d0] p-5"
             >
               <h3 className="font-semibold text-slate-800 text-sm mb-3">มาตรฐานที่ตรวจสอบ</h3>
               <div className="space-y-2">
                 {[
-                  { name: "WCAG 2.1 Level AA", color: "bg-[#4361ee]" },
+                  { name: "WCAG 2.1 Level AA", color: "bg-primary" },
                   { name: "TWCAG 2010", color: "bg-emerald-500" },
                   { name: "Website Policy", color: "bg-purple-500" },
                   { name: "PDPA", color: "bg-amber-500" },

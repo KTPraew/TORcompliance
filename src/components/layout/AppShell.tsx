@@ -5,15 +5,14 @@ import { Sidebar } from "./Sidebar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, Shield } from "lucide-react";
 
-interface AppShellProps {
-  children: ReactNode;
-}
+interface AppShellProps { children: ReactNode }
 
 export function AppShell({ children }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="bg-[#f1f4fd] min-h-screen">
+    <div className="bg-[#f8fafb] dark:bg-background min-h-screen">
+
       {/* Desktop sidebar */}
       <div className="hidden md:block">
         <Sidebar />
@@ -29,7 +28,7 @@ export function AppShell({ children }: AppShellProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
               onClick={() => setSidebarOpen(false)}
             />
             <motion.div
@@ -46,22 +45,26 @@ export function AppShell({ children }: AppShellProps) {
         )}
       </AnimatePresence>
 
-      {/* Content */}
+      {/* Content area */}
       <div className="md:pl-[240px]">
+
         {/* Mobile header */}
-        <header className="sticky top-0 z-30 flex items-center gap-3 px-4 h-14 bg-white border-b border-slate-100 md:hidden">
+        <header className="sticky top-0 z-30 flex items-center gap-3 px-4 h-14 md:hidden bg-white border-b border-slate-100">
           <button
             onClick={() => setSidebarOpen(true)}
             aria-label="เปิดเมนู"
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors text-slate-500 hover:bg-slate-100"
           >
             <Menu className="w-5 h-5" aria-hidden="true" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: "#059669", boxShadow: "0 2px 8px rgba(5,150,105,0.25)" }}
+            >
               <Shield className="w-4 h-4 text-white" aria-hidden="true" />
             </div>
-            <span className="font-bold text-slate-900 text-[13px]">TOR Compliance AI</span>
+            <span className="font-bold text-slate-800 text-[13px] tracking-tight">TOR Compliance AI</span>
           </div>
         </header>
 

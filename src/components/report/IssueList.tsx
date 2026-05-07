@@ -40,10 +40,10 @@ const severityConfig = {
   info: {
     label: "Info",
     icon: Info,
-    color: "text-blue-600",
-    bg: "bg-blue-50 border-blue-200",
+    color: "text-emerald-600",
+    bg: "bg-emerald-50 border-emerald-200",
     badgeVariant: "info" as const,
-    dot: "bg-blue-500",
+    dot: "bg-emerald-500",
   },
 };
 
@@ -174,7 +174,7 @@ export function IssueList({ issues, showFilter = true }: IssueListProps) {
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
                 filter === f.value
                   ? "gradient-primary text-white shadow-sm"
-                  : "bg-white border border-slate-200 text-slate-600 hover:border-primary/40 hover:text-primary"
+                  : "bg-white border border-slate-200 text-slate-600 hover:border-primary/40 hover:text-emerald-700"
               )}
             >
               {f.label}

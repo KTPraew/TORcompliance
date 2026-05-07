@@ -30,13 +30,13 @@ const statusConfig = {
     icon: AlertCircle,
     color: "text-amber-500",
     bg: "bg-amber-50 border-amber-200",
-    label: "ตรวจสอบ",
+    label: "ควรปรับปรุง",
   },
   pending: {
     icon: Circle,
     color: "text-slate-400",
     bg: "bg-slate-50 border-slate-200",
-    label: "รอดำเนินการ",
+    label: "ยังไม่ตรวจสอบ",
   },
 };
 
@@ -145,8 +145,8 @@ export function ChecklistItemRow({ item, onStatusChange, index = 0 }: ChecklistI
             </div>
           )}
           {item.suggestion && (
-            <div className="flex gap-2 text-xs text-blue-700 bg-blue-50/80 rounded-lg p-3 border border-blue-100">
-              <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-blue-500" />
+            <div className="flex gap-2 text-xs text-emerald-700 bg-emerald-50/80 rounded-lg p-3 border border-emerald-100">
+              <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-emerald-500" />
               <div>
                 <span className="font-semibold">คำแนะนำ: </span>
                 {item.suggestion}

@@ -21,10 +21,10 @@ import { Modal } from "@/components/ui/Modal";
 import type { Project } from "@/types";
 
 const statusFilters = [
-  { label: "ทั้งหมด", value: "all" },
-  { label: "กำลังดำเนินการ", value: "in_progress" },
-  { label: "เสร็จสิ้น", value: "completed" },
-  { label: "รอดำเนินการ", value: "pending" },
+  { label: "ทั้งหมด",         value: "all"         },
+  { label: "กำลังตรวจสอบ",  value: "in_progress" },
+  { label: "วิเคราะห์แล้ว",  value: "completed"   },
+  { label: "รอการวิเคราะห์", value: "pending"     },
 ];
 
 const categoryOptions = [
@@ -189,17 +189,18 @@ export default function ProjectsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="bg-white rounded-2xl border border-slate-100/80 p-4 mb-6"
-          style={{ boxShadow: "0 1px 4px rgba(67,97,238,0.04), 0 4px 16px rgba(67,97,238,0.05)" }}
+          style={{ boxShadow: "0 1px 4px rgba(5,150,105,0.04), 0 4px 16px rgba(5,150,105,0.05)" }}
         >
           <div className="flex items-center gap-4 flex-wrap">
             <div className="relative flex-1 min-w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
+                aria-label="ค้นหาโปรเจค"
                 placeholder="ค้นหาโปรเจค..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-muted border border-slate-200 dark:border-border rounded-xl text-sm text-slate-900 dark:text-foreground placeholder-slate-400 dark:placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
               />
               {search && (
                 <button
@@ -211,15 +212,16 @@ export default function ProjectsPage() {
               )}
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5" role="group" aria-label="กรองตามสถานะ">
               {statusFilters.map((f) => (
                 <button
                   key={f.value}
                   onClick={() => setStatusFilter(f.value)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  aria-pressed={statusFilter === f.value}
+                  className={`h-9 min-w-[88px] px-4 rounded-lg text-xs font-medium transition-all flex items-center justify-center ${
                     statusFilter === f.value
                       ? "gradient-primary text-white shadow-sm"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      : "bg-slate-100 dark:bg-muted text-slate-600 dark:text-muted-foreground hover:bg-slate-200 dark:hover:bg-border"
                   }`}
                 >
                   {f.label}
@@ -262,7 +264,7 @@ export default function ProjectsPage() {
               exit={{ opacity: 0 }}
               className="flex items-center justify-center py-24"
             >
-              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+              <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
             </motion.div>
           ) : projects.length > 0 ? (
             <motion.div
@@ -273,11 +275,11 @@ export default function ProjectsPage() {
               className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
             >
               {projects.map((project, index) => (
-                <div key={project.id} className="relative group">
+                <div key={project.id} className="relative group h-full">
                   <ProjectCard project={project} index={index} />
                   <button
                     onClick={() => handleOpenDeleteConfirm(project)}
-                    className="absolute top-3 right-3 w-9 h-9 rounded-lg bg-white/80 border border-slate-200 text-slate-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-sm"
+                    className="absolute top-3 right-3 w-9 h-9 rounded-lg bg-white/90 dark:bg-card/90 border border-slate-200 dark:border-border text-slate-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 transition-all shadow-sm"
                     aria-label={`ลบโปรเจค ${project.name}`}
                   >
                     <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
@@ -290,13 +292,13 @@ export default function ProjectsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: projects.length * 0.06, duration: 0.35 }}
                 onClick={handleOpenCreate}
-                className="border-2 border-dashed border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 text-center hover:border-primary/40 hover:bg-primary/2 transition-all duration-200 group min-h-[200px]"
+                className="border-2 border-dashed border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 text-center hover:border-emerald-300 hover:bg-emerald-50/40 transition-all duration-200 group min-h-[172px]"
               >
                 <div className="w-12 h-12 rounded-2xl bg-slate-100 group-hover:bg-primary/10 flex items-center justify-center transition-colors">
-                  <Plus className="w-6 h-6 text-slate-400 group-hover:text-primary transition-colors" />
+                  <Plus className="w-6 h-6 text-slate-400 group-hover:text-emerald-700 transition-colors" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-500 group-hover:text-primary transition-colors">
+                  <p className="text-sm font-semibold text-slate-500 group-hover:text-emerald-700 transition-colors">
                     สร้างโปรเจคใหม่
                   </p>
                   <p className="text-xs text-slate-400 mt-0.5">เพิ่มเว็บไซต์ใหม่เพื่อตรวจสอบ</p>

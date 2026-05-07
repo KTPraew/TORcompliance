@@ -12,6 +12,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/Button";
 
 const faqs = [
@@ -42,19 +43,19 @@ export default function HelpPage() {
 
   return (
     <AppShell>
+      <PageHeader title="ช่วยเหลือ" />
       <div className="px-6 py-7 lg:px-8 max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-2xl font-bold text-slate-900">ช่วยเหลือ</h1>
-          <p className="text-slate-500 text-sm mt-1">คำถามที่พบบ่อยและวิธีใช้งาน</p>
+          <p className="text-slate-500 dark:text-muted-foreground text-sm mt-1">คำถามที่พบบ่อยและวิธีใช้งาน</p>
         </motion.div>
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
-            { icon: BookOpen, label: "คู่มือการใช้งาน", color: "bg-blue-50 text-blue-600" },
+            { icon: BookOpen, label: "คู่มือการใช้งาน", color: "bg-emerald-50 text-emerald-600" },
             { icon: MessageCircle, label: "แชทกับทีมงาน", color: "bg-emerald-50 text-emerald-600" },
             { icon: Mail, label: "ส่งอีเมลหาเรา", color: "bg-purple-50 text-purple-600" },
           ].map((item, i) => {
@@ -65,7 +66,7 @@ export default function HelpPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
-                className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-5 flex flex-col items-center gap-3 text-center cursor-pointer hover:shadow-lg transition-all"
+                className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-5 flex flex-col items-center gap-3 text-center cursor-pointer hover:shadow-lg transition-all"
               >
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${item.color}`}>
                   <Icon className="w-6 h-6" />
@@ -77,7 +78,7 @@ export default function HelpPage() {
           })}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 p-6">
+        <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 p-6">
           <h2 className="font-semibold text-slate-900 mb-5">คำถามที่พบบ่อย</h2>
           <div className="space-y-2">
             {faqs.map((faq, index) => (

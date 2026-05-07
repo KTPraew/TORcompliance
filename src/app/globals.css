@@ -4,10 +4,10 @@
 
 @layer utilities {
   .gradient-primary {
-    background: linear-gradient(135deg, #4361ee 0%, #748ffc 100%);
+    background: linear-gradient(135deg, #059669 0%, #34d399 100%);
   }
   .gradient-primary-dark {
-    background: linear-gradient(135deg, #2d44c5 0%, #4361ee 100%);
+    background: linear-gradient(135deg, #047857 0%, #059669 100%);
   }
 }
 
@@ -18,8 +18,11 @@
 .scrollbar-thin::-webkit-scrollbar { width: 4px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.10);
   border-radius: 2px;
+}
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -33,32 +36,56 @@
 
 @layer base {
   :root {
-    --color-primary: #4361ee;
-    --color-primary-light: #748ffc;
-    --color-primary-dark: #2d44c5;
-    --color-primary-subtle: #eef2ff;
-    --color-surface: #f1f4fd;
+    --color-primary: #059669;
+    --color-primary-light: #34d399;
+    --color-primary-dark: #047857;
+    --color-primary-subtle: #ecfdf5;
+    --color-surface: #f8fafb;
 
-    --background: #f1f4fd;
+    --background: #f8fafb;
     --foreground: oklch(0.145 0 0);
     --card: #ffffff;
     --card-foreground: oklch(0.145 0 0);
     --popover: #ffffff;
     --popover-foreground: oklch(0.145 0 0);
-    --primary: #4361ee;
+    --primary: #059669;
     --primary-foreground: #ffffff;
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
     --muted: oklch(0.97 0 0);
     --muted-foreground: oklch(0.556 0 0);
-    --accent: #eef2ff;
-    --accent-foreground: #4361ee;
+    --accent: #ecfdf5;
+    --accent-foreground: #059669;
     --destructive: oklch(0.577 0.245 27.325);
     --destructive-foreground: oklch(0.985 0 0);
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
-    --ring: #4361ee;
+    --ring: #059669;
     --radius: 0.875rem;
+  }
+
+  .dark {
+    --color-surface: #0a1a12;
+
+    --background: #0a1a12;
+    --foreground: #e2e8f0;
+    --card: #0f2518;
+    --card-foreground: #e2e8f0;
+    --popover: #0f2518;
+    --popover-foreground: #e2e8f0;
+    --primary: #34d399;
+    --primary-foreground: #022c22;
+    --secondary: #1a3028;
+    --secondary-foreground: #e2e8f0;
+    --muted: #1a3028;
+    --muted-foreground: #94a3b8;
+    --accent: #1a3028;
+    --accent-foreground: #34d399;
+    --destructive: oklch(0.62 0.22 27);
+    --destructive-foreground: #fff;
+    --border: #1a3028;
+    --input: #1a3028;
+    --ring: #34d399;
   }
 
   html {

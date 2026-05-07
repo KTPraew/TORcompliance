@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 interface ComplianceScoreProps {
@@ -17,33 +17,38 @@ export function ComplianceScore({
   sublabel,
 }: ComplianceScoreProps) {
   const [animatedScore, setAnimatedScore] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const radius = size / 2 - 16;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (animatedScore / 100) * circumference;
 
   useEffect(() => {
+    const duration = 1200;
+    const steps = 60;
+    const stepValue = score / steps;
+    let current = 0;
+
     const timer = setTimeout(() => {
-      const duration = 1200;
-      const steps = 60;
-      const stepValue = score / steps;
-      let current = 0;
-      const interval = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         current += stepValue;
         if (current >= score) {
           setAnimatedScore(score);
-          clearInterval(interval);
+          if (intervalRef.current) clearInterval(intervalRef.current);
         } else {
           setAnimatedScore(Math.round(current));
         }
       }, duration / steps);
-      return () => clearInterval(interval);
     }, 300);
-    return () => clearTimeout(timer);
+
+    return () => {
+      clearTimeout(timer);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [score]);
 
   const getColor = (s: number) => {
     if (s >= 90) return { stroke: "#10b981", text: "text-emerald-600", bg: "#ecfdf5" };
-    if (s >= 70) return { stroke: "#3b82f6", text: "text-blue-600", bg: "#eff6ff" };
+    if (s >= 70) return { stroke: "#3b82f6", text: "text-emerald-600", bg: "#eff6ff" };
     if (s >= 50) return { stroke: "#f59e0b", text: "text-amber-600", bg: "#fffbeb" };
     return { stroke: "#ef4444", text: "text-red-600", bg: "#fef2f2" };
   };

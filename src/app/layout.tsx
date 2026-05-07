@@ -3,7 +3,7 @@ import "./globals.css";
 import { IBM_Plex_Sans_Thai } from "next/font/google";
 import { Providers } from "./providers";
 
-const ibmPlexSansThai = IBM_Plex_Sans_Thai({
+const ibmPlexSans = IBM_Plex_Sans_Thai({
   subsets: ["thai", "latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-sans",
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="th" className={ibmPlexSansThai.variable} suppressHydrationWarning>
+    <html lang="th" className={ibmPlexSans.variable} suppressHydrationWarning>
       <body className="font-sans antialiased">
         <Providers>{children}</Providers>
       </body>

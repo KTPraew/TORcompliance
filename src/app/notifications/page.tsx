@@ -73,8 +73,8 @@ export default function NotificationsPage() {
               iconName: "check",
               iconColor: "text-emerald-500",
               iconBg: "bg-emerald-50",
-              title: "การวิเคราะห์เสร็จสิ้น",
-              body: `${p.name} — ได้คะแนน ${p.score}%`,
+              title: "วิเคราะห์เสร็จสมบูรณ์",
+              body: `${p.name} — ผลลัพธ์ ${p.score}%`,
               time: relativeTime(p.updated_at),
               unread: Date.now() - new Date(p.updated_at).getTime() < 86400000,
             });
@@ -83,10 +83,10 @@ export default function NotificationsPage() {
             items.push({
               id: `progress-${p.id}`,
               iconName: "zap",
-              iconColor: "text-blue-500",
-              iconBg: "bg-blue-50",
-              title: "กำลังดำเนินการ",
-              body: `${p.name} — อยู่ระหว่างการตรวจสอบ`,
+              iconColor: "text-emerald-500",
+              iconBg: "bg-emerald-50",
+              title: "กำลังตรวจสอบ",
+              body: `${p.name} — กำลังตรวจสอบ checklist`,
               time: relativeTime(p.updated_at),
               unread: false,
             });
@@ -97,7 +97,7 @@ export default function NotificationsPage() {
               iconName: "file",
               iconColor: "text-purple-500",
               iconBg: "bg-purple-50",
-              title: "อัปโหลด TOR สำเร็จ",
+              title: "อัปโหลดเอกสาร TOR สำเร็จ",
               body: `${p.name} — ${p.tor_file_name}`,
               time: relativeTime(p.created_at),
               unread: false,
@@ -124,10 +124,9 @@ export default function NotificationsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-2xl font-bold text-slate-900">การแจ้งเตือน</h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 dark:text-muted-foreground text-sm mt-1">
             {loading
-              ? "กำลังโหลด..."
+              ? "กำลังประมวลผลข้อมูล..."
               : unreadCount > 0
               ? `${unreadCount} การแจ้งเตือนใหม่`
               : "ไม่มีการแจ้งเตือนใหม่"}
@@ -136,7 +135,7 @@ export default function NotificationsPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <Loader2 className="w-8 h-8 text-[#4361ee] animate-spin" />
+            <Loader2 className="w-8 h-8 text-emerald-700 animate-spin" />
           </div>
         ) : notifications.length === 0 ? (
           <motion.div
@@ -147,11 +146,11 @@ export default function NotificationsPage() {
             <div className="w-20 h-20 rounded-3xl bg-slate-100 flex items-center justify-center mb-4">
               <Bell className="w-10 h-10 text-slate-300" />
             </div>
-            <h3 className="text-lg font-semibold text-slate-700 mb-1">ยังไม่มีการแจ้งเตือน</h3>
-            <p className="text-sm text-slate-400">เริ่มต้นวิเคราะห์โปรเจคเพื่อรับการแจ้งเตือน</p>
+            <h3 className="text-lg font-semibold text-slate-700 mb-1">ยังไม่มีข้อมูล</h3>
+            <p className="text-sm text-slate-400">เริ่มวิเคราะห์เอกสารเพื่อรับการแจ้งเตือน</p>
           </motion.div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(67,97,238,0.04),0_4px_16px_rgba(67,97,238,0.05)] border border-slate-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(5,150,105,0.04),0_4px_16px_rgba(5,150,105,0.05)] border border-slate-100 overflow-hidden">
             <div className="divide-y divide-slate-50">
               {notifications.map((notif, index) => {
                 const Icon = ICONS[notif.iconName];
@@ -162,7 +161,7 @@ export default function NotificationsPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
                     className={`flex items-start gap-4 p-5 hover:bg-slate-50/50 transition-colors cursor-pointer ${
-                      notif.unread ? "bg-blue-50/30" : ""
+                      notif.unread ? "bg-emerald-50/30" : ""
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${notif.iconBg}`}>
