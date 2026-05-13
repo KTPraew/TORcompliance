@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 /* ─── hooks ──────────────────────────────────────────────────────────────── */
 
@@ -275,95 +276,105 @@ function Navbar() {
         style={
           scrolled || mobileOpen
             ? {
-                background: "rgba(7,12,24,0.96)",
-                backdropFilter: "blur(20px) saturate(200%)",
-                WebkitBackdropFilter: "blur(20px) saturate(200%)",
-                borderBottom: "1px solid rgba(255,255,255,0.07)",
-                boxShadow: "0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.4)",
+                background: "rgba(5,14,9,0.97)",
+                backdropFilter: "blur(20px) saturate(180%)",
+                WebkitBackdropFilter: "blur(20px) saturate(180%)",
+                borderBottom: "1px solid rgba(52,211,153,0.08)",
+                boxShadow: "0 1px 0 rgba(52,211,153,0.05), 0 8px 32px rgba(0,0,0,0.4)",
               }
             : {}
         }
       >
-        <div className="max-w-6xl mx-auto px-5 h-[68px] flex items-center justify-between gap-6">
+        <div className="max-w-6xl mx-auto px-5 h-16 relative flex items-center justify-between">
 
           {/* ── Logo ── */}
           <Link
             href="/"
-            className="flex items-center gap-3 flex-shrink-0 group"
+            className="flex items-center flex-shrink-0 group z-10"
             aria-label="TOR Compliance AI — หน้าหลัก"
           >
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
-              style={{ background: "#059669", boxShadow: "0 4px 14px rgba(5,150,105,0.5)" }}
-            >
-              <IconShield className="w-[18px] h-[18px] text-white" />
-            </div>
-            <div className="leading-none">
-              <span className="block font-bold text-white text-[15px] tracking-tight">
-                TOR Compliance
-              </span>
-              <span className="block text-[11px] font-semibold tracking-widest uppercase mt-0.5"
-                style={{ color: "#34d399" }}>
-                AI Platform
-              </span>
-            </div>
+            <BrandLogo
+              size="md"
+              variant="dark"
+              markClassName="transition-transform duration-200 group-hover:scale-105"
+            />
           </Link>
 
-          {/* ── Desktop nav ── */}
+          {/* ── Desktop nav — absolutely centered so it never shifts with logo/auth widths ── */}
           <nav
-            className="hidden md:flex items-center rounded-full px-1 py-1 gap-0.5 flex-1 justify-center max-w-xs mx-auto"
+            className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center"
             aria-label="เมนูหลัก"
-            style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.09)",
-            }}
           >
-            {NAV_LINKS.map(({ label, href }) => {
-              const isActive = activeSection === href;
-              return (
-                <a
-                  key={href}
-                  href={href}
-                  className="relative px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200"
-                  style={{
-                    color: isActive ? "#ffffff" : "rgba(255,255,255,0.72)",
-                    background: isActive ? "rgba(255,255,255,0.1)" : "transparent",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.color = "#ffffff";
-                    if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) e.currentTarget.style.color = "rgba(255,255,255,0.72)";
-                    if (!isActive) e.currentTarget.style.background = "transparent";
-                  }}
-                >
-                  {label}
-                  {isActive && (
-                    <span
-                      className="absolute bottom-[5px] left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
-                      aria-hidden="true"
-                      style={{ background: "#34d399" }}
-                    />
-                  )}
-                </a>
-              );
-            })}
+            <div
+              className="flex items-center rounded-full px-1 py-1 gap-0.5"
+              style={{
+                background: "rgba(5,150,105,0.08)",
+                border: "1px solid rgba(52,211,153,0.14)",
+              }}
+            >
+              {NAV_LINKS.map(({ label, href }) => {
+                const isActive = activeSection === href;
+                return (
+                  <a
+                    key={href}
+                    href={href}
+                    className="relative px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200"
+                    style={{
+                      color: isActive ? "#34d399" : "rgba(209,250,229,0.60)",
+                      background: isActive ? "rgba(52,211,153,0.12)" : "transparent",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.color = "rgba(209,250,229,1)";
+                        e.currentTarget.style.background = "rgba(52,211,153,0.07)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.color = "rgba(209,250,229,0.60)";
+                        e.currentTarget.style.background = "transparent";
+                      }
+                    }}
+                  >
+                    {label}
+                    {isActive && (
+                      <span
+                        className="absolute bottom-[5px] left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                        aria-hidden="true"
+                        style={{ background: "#34d399" }}
+                      />
+                    )}
+                  </a>
+                );
+              })}
+            </div>
           </nav>
 
           {/* ── Auth + mobile toggle ── */}
           <div className="flex items-center gap-2 flex-shrink-0">
             <Link
               href="/login"
-              className="hidden sm:block text-sm font-medium h-9 px-3.5 rounded-lg transition-all duration-150 hover:bg-white/[0.07] flex items-center"
-              style={{ color: "rgba(255,255,255,0.75)" }}
+              className="hidden sm:flex items-center whitespace-nowrap text-sm font-medium h-9 px-4 rounded-xl transition-all duration-150"
+              style={{
+                color: "#34d399",
+                border: "1px solid rgba(52,211,153,0.25)",
+                background: "rgba(52,211,153,0.06)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(52,211,153,0.12)";
+                e.currentTarget.style.borderColor = "rgba(52,211,153,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(52,211,153,0.06)";
+                e.currentTarget.style.borderColor = "rgba(52,211,153,0.25)";
+              }}
             >
               เข้าสู่ระบบ
             </Link>
             <Link
               href="/login"
-              className="flex items-center gap-1.5 text-sm font-semibold text-white h-9 px-4 rounded-xl transition-all duration-200 hover:opacity-90 active:scale-[0.97]"
-              style={{ background: "#059669", boxShadow: "0 2px 12px rgba(5,150,105,0.5)" }}
+              className="flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-white h-9 px-4 rounded-xl transition-all duration-200 hover:opacity-90 active:scale-[0.97]"
+              style={{ background: "#059669", boxShadow: "0 2px 12px rgba(5,150,105,0.45)" }}
             >
               เริ่มต้นฟรี
               <IconArrowRight className="w-3.5 h-3.5" />
@@ -371,10 +382,13 @@ function Navbar() {
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg gap-[5px] transition-colors duration-150 hover:bg-white/[0.08] cursor-pointer ml-1"
+              className="md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg gap-[5px] transition-colors duration-150 cursor-pointer ml-1"
+              style={{ background: "transparent" }}
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? "ปิดเมนู" : "เปิดเมนู"}
               aria-expanded={mobileOpen}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(52,211,153,0.08)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
             >
               <span
                 className="block w-5 h-[1.5px] rounded-full bg-white transition-all duration-200 origin-center"
@@ -400,7 +414,7 @@ function Navbar() {
           className="md:hidden overflow-hidden transition-all duration-300"
           style={{
             maxHeight: mobileOpen ? "320px" : "0",
-            borderTop: mobileOpen ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
+            borderTop: mobileOpen ? "1px solid rgba(52,211,153,0.08)" : "1px solid transparent",
           }}
         >
           <nav aria-label="เมนูมือถือ" className="px-5 py-4 space-y-1">
@@ -409,21 +423,24 @@ function Navbar() {
                 key={href}
                 href={href}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors duration-150 hover:bg-white/[0.07]"
-                style={{ color: activeSection === href ? "#ffffff" : "rgba(255,255,255,0.7)" }}
+                className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-colors duration-150"
+                style={{
+                  color: activeSection === href ? "#34d399" : "rgba(209,250,229,0.65)",
+                  background: activeSection === href ? "rgba(52,211,153,0.08)" : "transparent",
+                }}
               >
                 {label}
                 {activeSection === href && (
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#34d399" }} aria-hidden="true" />
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#34d399" }} aria-hidden="true" />
                 )}
               </a>
             ))}
-            <div className="pt-3 flex flex-col gap-2" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            <div className="pt-3 flex flex-col gap-2" style={{ borderTop: "1px solid rgba(52,211,153,0.08)" }}>
               <Link
                 href="/login"
                 onClick={() => setMobileOpen(false)}
-                className="text-center text-sm font-medium py-2.5 rounded-xl transition-colors hover:bg-white/[0.07]"
-                style={{ color: "rgba(255,255,255,0.75)" }}
+                className="text-center text-sm font-medium py-2.5 rounded-xl transition-colors"
+                style={{ color: "rgba(209,250,229,0.75)" }}
               >
                 เข้าสู่ระบบ
               </Link>
@@ -586,7 +603,7 @@ function StatsBar() {
           className="grid grid-cols-2 sm:grid-cols-4 rounded-2xl overflow-hidden"
           style={{
             background: "#ffffff",
-            border: "1px solid #e8edf8",
+            border: "1px solid #d1fae5",
             boxShadow: "0 1px 4px rgba(5,150,105,0.04), 0 4px 20px rgba(5,150,105,0.06)",
           }}
         >
@@ -595,7 +612,7 @@ function StatsBar() {
               key={s.label}
               className="px-8 py-6 flex flex-col items-center text-center"
               style={{
-                borderRight: i < stats.length - 1 ? "1px solid #e8edf8" : undefined,
+                borderRight: i < stats.length - 1 ? "1px solid #d1fae5" : undefined,
               }}
             >
               <span
@@ -641,7 +658,7 @@ function FeaturesSection() {
   ];
 
   return (
-    <section id="features" aria-labelledby="features-heading" className="py-24" style={{ background: "#f8faff" }}>
+    <section id="features" aria-labelledby="features-heading" className="py-24" style={{ background: "#f0fdf4" }}>
       <div className="max-w-6xl mx-auto px-5">
         <div className="text-center mb-14">
           <div
@@ -669,7 +686,7 @@ function FeaturesSection() {
               className="rounded-2xl p-7 transition-all duration-200 cursor-default group"
               style={{
                 background: "#ffffff",
-                border: "1px solid #e8edf8",
+                border: "1px solid #d1fae5",
                 boxShadow: "0 1px 4px rgba(5,150,105,0.04), 0 4px 16px rgba(5,150,105,0.05)",
               }}
               onMouseEnter={e => {
@@ -828,7 +845,7 @@ function PricingSection() {
   ];
 
   return (
-    <section id="pricing" aria-labelledby="pricing-heading" className="py-24" style={{ background: "#f8faff" }}>
+    <section id="pricing" aria-labelledby="pricing-heading" className="py-24" style={{ background: "#f0fdf4" }}>
       <div className="max-w-6xl mx-auto px-5">
         <div className="text-center mb-14">
           <div
@@ -860,7 +877,7 @@ function PricingSection() {
                     }
                   : {
                       background: "#ffffff",
-                      border: "1px solid #e8edf8",
+                      border: "1px solid #d1fae5",
                       boxShadow: "0 1px 4px rgba(5,150,105,0.04), 0 4px 16px rgba(5,150,105,0.05)",
                     }
               }
@@ -970,8 +987,8 @@ function TestimonialsSection() {
               key={name}
               className="rounded-2xl p-7 transition-all duration-200"
               style={{
-                background: "#f8faff",
-                border: "1px solid #e8edf8",
+                background: "#f0fdf4",
+                border: "1px solid #d1fae5",
               }}
               onMouseEnter={e => {
                 (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 24px rgba(5,150,105,0.1)";
@@ -988,7 +1005,7 @@ function TestimonialsSection() {
                 ))}
               </div>
               <p className="text-sm leading-relaxed mb-5" style={{ color: "#334155" }}>{text}</p>
-              <div className="flex items-center gap-3 pt-4" style={{ borderTop: "1px solid #e8edf8" }}>
+              <div className="flex items-center gap-3 pt-4" style={{ borderTop: "1px solid #d1fae5" }}>
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
                   style={{ background: "#059669" }}
@@ -1013,7 +1030,7 @@ function TestimonialsSection() {
 
 function CTASection() {
   return (
-    <section aria-labelledby="cta-heading" className="py-24" style={{ background: "#f8faff" }}>
+    <section aria-labelledby="cta-heading" className="py-24" style={{ background: "#f0fdf4" }}>
       <div className="max-w-6xl mx-auto px-5">
         <div
           className="rounded-3xl px-10 py-16 text-center overflow-hidden relative"

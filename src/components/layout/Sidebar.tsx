@@ -9,17 +9,15 @@ import {
   FolderOpen,
   FileBarChart2,
   Settings,
-  Shield,
   Bell,
   LogOut,
   HelpCircle,
-  Sun,
-  Moon,
   ChevronLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth-context";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import type { User } from "@supabase/supabase-js";
 
 /* ─── nav structure ──────────────────────────────────────────────────────── */
@@ -67,27 +65,18 @@ function NavItem({
       onClick={onClose}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group/nav",
+        "relative flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all duration-150 group/nav",
         active
-          ? "bg-emerald-50 text-emerald-700"
-          : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+          ? "text-emerald-600"
+          : "text-slate-600 hover:text-slate-900"
       )}
     >
-      {/* Active left accent bar */}
       {active && (
         <span
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-r-full bg-emerald-500"
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-7 rounded-r-full bg-emerald-500"
           aria-hidden="true"
         />
       )}
-      <Icon
-        size={17}
-        aria-hidden="true"
-        className={cn(
-          "flex-shrink-0 transition-colors",
-          active ? "text-emerald-500" : "text-slate-400 group-hover/nav:text-slate-600"
-        )}
-      />
       <span className="flex-1 truncate">{label}</span>
       {badge != null && (
         <span
@@ -95,7 +84,7 @@ function NavItem({
             "text-[11px] font-semibold tabular-nums rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center leading-none",
             active
               ? "bg-emerald-100 text-emerald-700"
-              : "bg-red-100 text-red-600"
+              : "bg-slate-100 text-slate-500"
           )}
           aria-label={`${badge} รายการ`}
         >
@@ -117,7 +106,6 @@ export function Sidebar({ onClose }: SidebarProps = {}) {
   const [loggingOut, setLoggingOut]        = useState(false);
   const [showLogoutConfirm, setShowLogout] = useState(false);
   const [projectCount, setProjectCount]   = useState<number | null>(null);
-  const [theme, setTheme]                 = useState<"light" | "dark">("light");
 
   useEffect(() => {
     if (!user) return;
@@ -155,23 +143,14 @@ export function Sidebar({ onClose }: SidebarProps = {}) {
           <Link
             href="/dashboard"
             onClick={onClose}
-            className="flex items-center gap-2.5 group min-w-0"
+            className="flex items-center group min-w-0"
             aria-label="TOR Compliance AI — แดชบอร์ด"
           >
-            <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-opacity group-hover:opacity-90"
-              style={{ background: "#059669", boxShadow: "0 4px 12px rgba(5,150,105,0.25)" }}
-            >
-              <Shield className="w-4 h-4 text-white" aria-hidden="true" />
-            </div>
-            <div className="min-w-0">
-              <div className="font-bold text-slate-800 text-[13px] leading-none tracking-tight truncate">
-                TOR Compliance
-              </div>
-              <div className="text-[10px] mt-0.5 tracking-widest uppercase text-slate-400">
-                AI Platform
-              </div>
-            </div>
+            <BrandLogo
+              size="md"
+              variant="light"
+              markClassName="transition-opacity duration-150 group-hover:opacity-80"
+            />
           </Link>
 
           <button
@@ -184,11 +163,7 @@ export function Sidebar({ onClose }: SidebarProps = {}) {
         </div>
 
         {/* ── Nav ── */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin px-3 py-4 space-y-0.5">
-          {/* GENERAL section */}
-          <p className="text-[10px] font-semibold tracking-widest uppercase px-3 mb-2 text-slate-400">
-            หลัก
-          </p>
+        <div className="flex-1 overflow-y-auto scrollbar-thin py-5 space-y-0.5">
           {primaryNav.map((item) => (
             <NavItem
               key={item.href}
@@ -199,10 +174,9 @@ export function Sidebar({ onClose }: SidebarProps = {}) {
             />
           ))}
 
-          {/* SUPPORT section */}
-          <div className="pt-4">
-            <p className="text-[10px] font-semibold tracking-widest uppercase px-3 mb-2 text-slate-400">
-              สนับสนุน
+          <div className="pt-6">
+            <p className="text-[10px] font-semibold tracking-widest uppercase px-4 mb-1 text-slate-400">
+              อื่น ๆ
             </p>
             {supportNav.map((item) => (
               <NavItem
@@ -216,15 +190,14 @@ export function Sidebar({ onClose }: SidebarProps = {}) {
         </div>
 
         {/* ── User / logout ── */}
-        <div className="px-3 pb-2 flex-shrink-0 border-t border-slate-100 pt-3">
+        <div className="px-4 pb-4 flex-shrink-0 border-t border-slate-100 pt-4">
           <button
             onClick={() => setShowLogout(true)}
             disabled={loggingOut}
             aria-label="ออกจากระบบ"
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 disabled:opacity-50 group/logout hover:bg-slate-50"
+            className="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all duration-150 disabled:opacity-50 group/logout hover:bg-slate-50"
           >
-            {/* Avatar */}
-            <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-slate-100">
+            <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-slate-200">
               {profileMeta?.avatar_url ? (
                 <img
                   src={profileMeta.avatar_url}
@@ -241,9 +214,8 @@ export function Sidebar({ onClose }: SidebarProps = {}) {
               )}
             </div>
 
-            {/* Name + email */}
             <div className="flex-1 min-w-0 text-left">
-              <div className="text-[13px] font-semibold truncate text-slate-700">
+              <div className="text-sm font-semibold truncate text-slate-800">
                 {displayName || "กำลังโหลด..."}
               </div>
               <div className="text-[11px] truncate mt-0.5 text-slate-400">
@@ -257,34 +229,6 @@ export function Sidebar({ onClose }: SidebarProps = {}) {
               className="flex-shrink-0 text-slate-300 group-hover/logout:text-slate-500 transition-colors"
             />
           </button>
-
-          {/* ── Light / Dark toggle ── */}
-          <div className="flex gap-2 mt-2 px-1">
-            <button
-              onClick={() => setTheme("light")}
-              className={cn(
-                "flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-medium transition-all",
-                theme === "light"
-                  ? "bg-slate-100 text-slate-700"
-                  : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
-              )}
-            >
-              <Sun size={13} aria-hidden="true" />
-              Light
-            </button>
-            <button
-              onClick={() => setTheme("dark")}
-              className={cn(
-                "flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-medium transition-all",
-                theme === "dark"
-                  ? "bg-slate-100 text-slate-700"
-                  : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
-              )}
-            >
-              <Moon size={13} aria-hidden="true" />
-              Dark
-            </button>
-          </div>
         </div>
       </aside>
 

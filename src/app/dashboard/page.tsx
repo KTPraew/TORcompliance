@@ -55,7 +55,7 @@ export default function DashboardPage() {
   return (
     <AppShell>
       {/* Page top bar */}
-      <div className="sticky top-0 z-20 hidden md:flex items-center px-8 h-14 bg-white/90 dark:bg-card/90 backdrop-blur-md border-b border-slate-100 dark:border-border">
+      <div className="sticky top-0 z-20 hidden md:flex items-center px-8 h-14 bg-[#f0fdf4]/95 dark:bg-card/90 backdrop-blur-md border-b border-emerald-100/70 dark:border-border">
         <h1 className="text-[15px] font-semibold text-slate-900 dark:text-foreground">แดชบอร์ด</h1>
       </div>
 

@@ -3,8 +3,9 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Shield, Eye, EyeOff, ArrowRight, CheckCircle2, Lock, Mail, Loader2 } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, CheckCircle2, Lock, Mail, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 const features = [
   "วิเคราะห์ TOR อัตโนมัติด้วย AI",
@@ -49,14 +50,13 @@ function LoginForm() {
       className="w-full max-w-[400px]"
     >
       {/* Mobile logo */}
-      <div className="lg:hidden flex items-center gap-3 mb-8">
-        <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center shadow-md shadow-emerald-500/20">
-          <Shield className="w-5 h-5 text-white" aria-hidden="true" />
-        </div>
-        <div>
-          <div className="font-bold text-slate-900 text-sm leading-none">TOR Compliance AI</div>
-          <div className="text-[11px] text-slate-500 mt-0.5">ระบบตรวจสอบมาตรฐานเว็บไซต์</div>
-        </div>
+      <div className="lg:hidden mb-8">
+        <BrandLogo
+          size="sm"
+          variant="light"
+          title="TOR Compliance AI"
+          subtitle="ระบบตรวจสอบมาตรฐานเว็บไซต์"
+        />
       </div>
 
       {/* Card */}
@@ -196,15 +196,12 @@ export default function LoginPage() {
 
         <div className="relative z-10 flex flex-col h-full p-12">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/[0.12] border border-white/20 flex items-center justify-center">
-              <Shield className="w-6 h-6 text-white" aria-hidden="true" />
-            </div>
-            <div>
-              <div className="font-bold text-white text-base leading-none">TOR Compliance AI</div>
-              <div className="text-white/70 text-xs mt-0.5">ระบบตรวจสอบมาตรฐานเว็บไซต์ภาครัฐ</div>
-            </div>
-          </div>
+          <BrandLogo
+            size="md"
+            variant="dark"
+            title="TOR Compliance AI"
+            subtitle="ระบบตรวจสอบมาตรฐานเว็บไซต์ภาครัฐ"
+          />
 
           {/* Hero */}
           <div className="flex-1 flex flex-col justify-center max-w-sm">

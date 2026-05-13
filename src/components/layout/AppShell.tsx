@@ -3,7 +3,8 @@
 import { ReactNode, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, Shield } from "lucide-react";
+import { Menu } from "lucide-react";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 interface AppShellProps { children: ReactNode }
 
@@ -11,7 +12,7 @@ export function AppShell({ children }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="bg-[#f8fafb] dark:bg-background min-h-screen">
+    <div className="bg-[#f0fdf4] dark:bg-background min-h-screen">
 
       {/* Desktop sidebar */}
       <div className="hidden md:block">
@@ -57,15 +58,7 @@ export function AppShell({ children }: AppShellProps) {
           >
             <Menu className="w-5 h-5" aria-hidden="true" />
           </button>
-          <div className="flex items-center gap-2.5">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: "#059669", boxShadow: "0 2px 8px rgba(5,150,105,0.25)" }}
-            >
-              <Shield className="w-4 h-4 text-white" aria-hidden="true" />
-            </div>
-            <span className="font-bold text-slate-800 text-[13px] tracking-tight">TOR Compliance AI</span>
-          </div>
+          <BrandLogo size="sm" variant="light" title="TOR Compliance AI" subtitle={false} />
         </header>
 
         <main>{children}</main>
