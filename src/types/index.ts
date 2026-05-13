@@ -14,6 +14,7 @@ export interface Project {
   updatedAt?: string;
   torFileName?: string;
   uiFileName?: string;
+  imageUrl?: string;
   category?: string;
 }
 

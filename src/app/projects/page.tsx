@@ -11,11 +11,13 @@ import {
   X,
   Loader2,
   Trash2,
+  Pencil,
   AlertCircle,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
+import { EditProjectModal } from "@/components/dashboard/EditProjectModal";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import type { Project } from "@/types";
@@ -57,6 +59,9 @@ export default function ProjectsPage() {
     description: "",
     category: "Government Portal",
   });
+
+  // ─── Edit state ───────────────────────────────────────────────────────────
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   // ─── Delete state ─────────────────────────────────────────────────────────
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -162,6 +167,11 @@ export default function ProjectsPage() {
     } finally {
       setDeletingId(null);
     }
+  };
+
+  const handleSaveEdit = (updated: Project) => {
+    setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    setEditingProject(null);
   };
 
   const handleOpenDeleteConfirm = (project: Project) => {
@@ -277,13 +287,22 @@ export default function ProjectsPage() {
               {projects.map((project, index) => (
                 <div key={project.id} className="relative group h-full">
                   <ProjectCard project={project} index={index} />
-                  <button
-                    onClick={() => handleOpenDeleteConfirm(project)}
-                    className="absolute top-3 right-3 w-9 h-9 rounded-lg bg-white/90 dark:bg-card/90 border border-slate-200 dark:border-border text-slate-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 transition-all shadow-sm"
-                    aria-label={`ลบโปรเจค ${project.name}`}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
-                  </button>
+                  <div className="absolute top-3 right-3 flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 focus-within:opacity-100 transition-all">
+                    <button
+                      onClick={(e) => { e.preventDefault(); setEditingProject(project); }}
+                      className="w-9 h-9 rounded-lg bg-white/90 dark:bg-card/90 border border-slate-200 dark:border-border text-slate-500 hover:text-emerald-700 hover:border-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center justify-center transition-all shadow-sm"
+                      aria-label={`แก้ไขโปรเจค ${project.name}`}
+                    >
+                      <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                    </button>
+                    <button
+                      onClick={() => handleOpenDeleteConfirm(project)}
+                      className="w-9 h-9 rounded-lg bg-white/90 dark:bg-card/90 border border-slate-200 dark:border-border text-slate-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center justify-center transition-all shadow-sm"
+                      aria-label={`ลบโปรเจค ${project.name}`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                    </button>
+                  </div>
                 </div>
               ))}
 
@@ -328,6 +347,14 @@ export default function ProjectsPage() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Edit project modal */}
+      <EditProjectModal
+        project={editingProject}
+        open={editingProject !== null}
+        onClose={() => setEditingProject(null)}
+        onSave={handleSaveEdit}
+      />
 
       {/* Create project modal */}
       <Modal

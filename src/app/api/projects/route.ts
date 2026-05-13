@@ -17,6 +17,7 @@ function toProject(row: Record<string, unknown>): Project {
     reviewCount: (row.review_count as number) ?? 0,
     torFileName: (row.tor_file_name as string | null) ?? undefined,
     uiFileName: (row.ui_file_name as string | null) ?? undefined,
+    imageUrl: (row.image_url as string | null) ?? undefined,
     category: (row.category as string | null) ?? undefined,
     createdAt: createdAt ? createdAt.split("T")[0] : new Date().toISOString().split("T")[0],
     updatedAt: updatedAt ? updatedAt.split("T")[0] : undefined,
@@ -157,6 +158,7 @@ export async function PUT(request: NextRequest) {
     if (body.category !== undefined) updatePayload.category = body.category;
     if (body.status !== undefined) updatePayload.status = body.status;
     if (body.score !== undefined) updatePayload.score = body.score;
+    if (body.imageUrl !== undefined) updatePayload.image_url = body.imageUrl;
     if (body.checklistCount !== undefined) updatePayload.checklist_count = body.checklistCount;
     if (body.passedCount !== undefined) updatePayload.passed_count = body.passedCount;
     if (body.failedCount !== undefined) updatePayload.failed_count = body.failedCount;

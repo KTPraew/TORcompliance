@@ -40,7 +40,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
     >
       <Link href={`/projects/${project.id}`} className="flex h-full group">
         <div
-          className="flex flex-col h-full w-full bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border p-5 transition-all duration-200"
+          className="flex flex-col h-full w-full bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border overflow-hidden transition-all duration-200"
           style={{ boxShadow: "0 1px 4px rgba(5,150,105,0.04), 0 4px 16px rgba(5,150,105,0.05)" }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLElement).style.boxShadow =
@@ -53,6 +53,17 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
             (e.currentTarget as HTMLElement).style.borderColor = "";
           }}
         >
+          {/* Cover image */}
+          {project.imageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={project.imageUrl}
+              alt={`${project.name} cover`}
+              className="w-full h-24 object-cover flex-shrink-0"
+            />
+          )}
+
+          <div className="flex flex-col flex-1 p-5">
           {/* Header — fixed height */}
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3 min-w-0">
@@ -119,6 +130,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
               <Calendar className="w-3 h-3" aria-hidden="true" />
               {formatDateShort(project.createdAt)}
             </span>
+          </div>
           </div>
         </div>
       </Link>
